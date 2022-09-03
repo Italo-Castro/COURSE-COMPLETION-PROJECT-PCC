@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1042458226381",
+    "project_id": "ta-pago-19987",
+    "storage_bucket": "ta-pago-19987.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042458226381:android:b40e711cc95df7d95a0384",
+        "android_client_info": {
+          "package_name": "com.example.ta_pago"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042458226381-jdq1cs1k2m6pvc6g19ceerk66cg4auj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS4G8AiEatY5p-zLc1VIgL3V31jIhLZeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042458226381-jdq1cs1k2m6pvc6g19ceerk66cg4auj7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1042458226381-4hm4cg71qkuaibu9deefccb4ucmm0kos.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.taPago"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
