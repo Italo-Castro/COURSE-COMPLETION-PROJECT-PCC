@@ -57,7 +57,9 @@ class _AlunosState extends State<Alunos> {
             width: 60,
             height: 40,
             child: arquivos.isEmpty
-                ? Image.asset('assets/img/personGymProfile.png')
+                ? Image.asset(
+                    'assets/img/personGymProfile.png',
+                  )
                 : Image.network(arquivos[index]),
           ),
           title: Text(lista[index].nome), //refs[index].fullPath

@@ -33,8 +33,8 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadImages(usserLogged.uid);
-      _appEvaluation.text = usserLogged.avaliacaoApp.toString();
-      _nickName.text = usserLogged.apelido.toString();
+      _appEvaluation.text = usserLogged.avaliacaoApp != null ? usserLogged.avaliacaoApp.toString() : '';
+      _nickName.text = usserLogged.apelido != null? usserLogged.apelido.toString() : '';
     });
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +53,7 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
               padding: EdgeInsets.only(top: 5, right: 8.0, left: 8),
               child: Card(
                 child: Text(
-                    'Até agora você conquistou ${usserLogged.pontuacao} pontos'),
+                    'Até agora você conquistou ${usserLogged.pontuacao != null ? usserLogged.pontuacao : 0} pontos'),
               ),
             ),
             Padding(

@@ -46,27 +46,41 @@ class _RegisterUserState extends State<RegisterUser> {
           key: formKey,
           child: Builder(builder: (context) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    getImage();
-                  },
-                  child: Container(
-                    width: 190.0,
-                    height: 190.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage('assets/img/personGymProfile.png'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          getImage();
+                        },
+                        child: Container(
+                          width: 190.0,
+                          height: 190.0,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image:
+                                  AssetImage('assets/img/personGymProfile.png'),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Text('Clique na imagem para alterar sua foto'),
+                          Icon(Icons.arrow_circle_up),
+                        ],
+                      )
+                    ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20.0, left: 8, right: 8),
+                  padding: const EdgeInsets.only(top: 20.0, left: 8, right: 8),
                   child: TextFormField(
                     textAlign: TextAlign.center,
                     controller: _nameController,
@@ -77,7 +91,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      label: Text('Nome'),
+                      label: const Text('Nome'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -85,7 +99,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+                  padding: const EdgeInsets.only(top: 20, right: 8.0, left: 8),
                   child: TextFormField(
                     textAlign: TextAlign.center,
                     controller: _emailController,
