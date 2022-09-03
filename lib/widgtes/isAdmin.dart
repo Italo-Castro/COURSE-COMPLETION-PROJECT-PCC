@@ -44,12 +44,12 @@ class _IsAdminState extends State<IsAdmin> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.purpleAccent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.video_collection),
             label: 'Videos',
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.teal,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_pin),
