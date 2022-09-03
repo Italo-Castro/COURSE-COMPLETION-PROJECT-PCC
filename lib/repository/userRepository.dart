@@ -32,7 +32,7 @@ class UserRepository extends ChangeNotifier {
 
   _getUser(Usuario usuario) {
     usuarioLogado = usuario;
-    print('GET USER');
+    print('GET USER' + usuarioLogado.nome);
     notifyListeners();
   }
 
@@ -73,7 +73,7 @@ class UserRepository extends ChangeNotifier {
 
   update(Usuario user) async {
     try {
-      await db.collection('user').doc(auth.usuario!.uid).update({
+      await db.collection('user').doc(user.uid).update({
         'nome': user.nome,
         'email': user.email,
         'telefone': user.telefone,
@@ -93,6 +93,33 @@ class UserRepository extends ChangeNotifier {
         'panturilha': user.panturilha != null ? user.panturilha : '',
       });
       _getUser(user);
+    } catch (e) {
+      print('erro ao fazer update de usuario no banco de dados' + e.toString());
+    }
+  }
+
+  inactivateUser(Usuario user) async {
+    try {
+      await db.collection('user').doc(user.uid).update({
+        'nome': user.nome,
+        'email': user.email,
+        'telefone': user.telefone,
+        'password': user.passworld,
+        'apelido': user.apelido,
+        'isAdmin': user.isAdmin,
+        'ativo': user.ativo,
+        'pontuacao': user.pontuacao != null ? user.pontuacao : 0,
+        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : '0',
+        'busto': user.busto != null ? user.busto : '',
+        'torax': user.torax != null ? user.torax : '',
+        'bracos': user.bracos != null ? user.bracos : '',
+        'cintura': user.cintura != null ? user.cintura : '',
+        'abdomen': user.abdomen != null ? user.abdomen : '',
+        'quadril': user.quadril != null ? user.quadril : '',
+        'coxas': user.coxas != null ? user.coxas : '',
+        'panturilha': user.panturilha != null ? user.panturilha : '',
+      });
+
     } catch (e) {
       print('erro ao fazer update de usuario no banco de dados' + e.toString());
     }

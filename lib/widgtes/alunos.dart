@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,42 +14,58 @@ class Alunos extends StatefulWidget {
 }
 
 class _AlunosState extends State<Alunos> {
+  final _messangerKey = GlobalKey<ScaffoldMessengerState>();
+  final FirebaseStorage storage = FirebaseStorage.instance;
+  List<Reference> refs = [];
+  List<String> arquivos = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadImages();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<List<Usuario>> listUsers =
-        Provider.of<UserRepository>(context, listen: false).readAll();
-
     return FutureBuilder(
       future: Provider.of<UserRepository>(context, listen: false).readAll(),
       builder: (BuildContext context, AsyncSnapshot<List<Usuario>> snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData) {
           return Container(
-            child: Text('Nenhum usurio encontrado'),
+            child: const Text('Nenhum aluno encontrado'),
           ); // still loading
-        else {
-          return Teste(snapshot.data!);
+        } else {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: UserWidget(snapshot.data!),
+            ),
+          );
         }
         // return a widget here (you have to return a widget to the builder)
       },
     );
   }
 
-  Teste(List<Usuario> lista) {
+  UserWidget(List<Usuario> lista) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           leading: SizedBox(
             width: 60,
             height: 40,
-            child: Image.network(
-                'https://firebasestorage.googleapis.com/v0/b/ta-pago-19987.appspot.com/o/VwBV7kWin8VWsA2HAD6MeQ22cf03.jpg?alt=media&token=97ed1b64-2875-49f9-bd57-a58bdf634516',
-                //arquivos[INDEX]
-                fit: BoxFit.cover),
+            child: arquivos.isEmpty
+                ? Image.asset('assets/img/personGymProfile.png')
+                : Image.network(arquivos[index]),
           ),
-          title: Text(''), //refs[index].fullPath
-          trailing: IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () => print('oi'), //deleteImage(index)
+          title: Text(lista[index].nome), //refs[index].fullPath
+          trailing: Checkbox(
+            value: lista[index].ativo,
+            onChanged: (bool? value) {
+              userInactivate(lista[index]);
+            },
           ),
         );
       },
@@ -56,31 +73,38 @@ class _AlunosState extends State<Alunos> {
     );
   }
 
-  CardUser(List<Usuario> usuario) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 80.0),
-          child: Card(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 50,
-                      child: Image.asset('assets/img/Medidas.jpeg'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(usuario[2].nome),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
+  userInactivate(Usuario user) async {
+    print('vou inativar' + user.nome);
+    user.ativo = !user.ativo;
+    await Provider.of<UserRepository>(context, listen: false)
+        .inactivateUser(user);
+    setState(() {});
+
+    _messangerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text('Oi'),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            // Code to execute.
+          },
         ),
-      ],
+      ),
     );
+  }
+
+  loadImages() async {
+    List<Usuario> listUsers =
+        await Provider.of<UserRepository>(context, listen: false).readAll();
+
+    for (var x = 0; x < listUsers.length; x++) {
+      refs = (await storage.ref('${listUsers[x].uid}/').listAll()).items;
+      for (var ref in refs) {
+        arquivos.add(await ref.getDownloadURL());
+      }
+    }
+    setState(() {
+      loading = false;
+    });
   }
 }
