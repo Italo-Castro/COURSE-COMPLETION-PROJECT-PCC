@@ -10,6 +10,7 @@ import 'package:ta_pago/repository/userRepository.dart';
 import 'package:ta_pago/service/auth_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../widgtes/measurements.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class RegisterUser extends StatefulWidget {
   @override
@@ -284,10 +285,25 @@ class _RegisterUserState extends State<RegisterUser> {
         ),
       );
     } on AuthException catch (e) {
+
+      showToast(
+        '${e.message}',
+        context: context,
+        textStyle: TextStyle(foreground: Paint()),
+        backgroundColor: Colors.red,
+        position: StyledToastPosition.bottom,
+        duration: const Duration(seconds: 5),
+        curve: Curves.elasticInOut,
+        animDuration: const Duration(seconds: 2),
+        animation: StyledToastAnimation.fadeScale,
+        borderRadius: const BorderRadius.all(
+          Radius.circular(12),
+        ),
+      );
       setState(() {
         loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+      /* ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro: ${e.message}'),
           action: SnackBarAction(
@@ -297,7 +313,7 @@ class _RegisterUserState extends State<RegisterUser> {
             },
           ),
         ),
-      );
+      );*/
       print('deu erro ao cadastrar register_user linha 144 ' + e.message);
     }
   }
