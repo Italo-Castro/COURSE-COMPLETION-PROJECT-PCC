@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ta_pago/widgtes/list_widgtes/profile_configuration.dart';
 import 'package:ta_pago/widgtes/viewVideos.dart';
-import 'Ranking.dart';
-
-import 'alunos.dart';
-import 'chat.dart';
-import 'list_widgtes/addVideos.dart';
+import 'RankingPage.dart';
+import 'chatPage.dart';
 
 class NotAdmin extends StatefulWidget {
   const NotAdmin({Key? key}) : super(key: key);
@@ -20,8 +17,9 @@ class _NotAdminState extends State<NotAdmin> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     ViewVideos(),
-    Chat(),
-    Ranking(),
+    ChatPage(),
+    RankingPage(),
+    Text('Dieta'),
     ProfileConfigurations(),
   ];
 
@@ -53,6 +51,11 @@ class _NotAdminState extends State<NotAdmin> {
             icon: Icon(Icons.add_chart),
             label: 'Ranking',
             backgroundColor: Colors.purple,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lunch_dining_rounded),
+            label: 'Dieta',
+            backgroundColor: Colors.pink,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

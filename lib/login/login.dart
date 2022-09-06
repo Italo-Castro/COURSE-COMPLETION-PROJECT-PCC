@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/login/register_user.dart';
-
 import '../repository/userRepository.dart';
 import '../service/auth_service.dart';
 import '../widgtes/homePage.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -216,7 +216,18 @@ class _LoginState extends State<Login> {
             setState(() {
               loading = false;
             });
-            _messangerKey.currentState?.showSnackBar(
+            showToast('Usuário inativo, favor contate o administrador!',
+                context: contextParam,
+                textStyle: TextStyle(foreground: Paint()),
+                backgroundColor: Colors.red,
+                position: StyledToastPosition.bottom,
+                duration: const Duration(seconds: 5),
+                curve: Curves.elasticInOut,
+                animDuration: const Duration(seconds: 2),
+                animation: StyledToastAnimation.fadeScale,
+                borderRadius: BorderRadius.all(Radius.circular(12)));
+           
+            /*_messangerKey.currentState?.showSnackBar(
               SnackBar(
                 content:
                     Text('Usuário inativo, favor contate o administrador!'),
@@ -227,14 +238,24 @@ class _LoginState extends State<Login> {
                   },
                 ),
               ),
-            );
+            );*/
           }
         }
       } on AuthException catch (e) {
         setState(() {
           loading = false;
         });
-        _messangerKey.currentState?.showSnackBar(
+        showToast('${e.message}',
+            context: contextParam,
+            textStyle: TextStyle(foreground: Paint()),
+            backgroundColor: Colors.red,
+            position: StyledToastPosition.bottom,
+            duration: const Duration(seconds: 5),
+            curve: Curves.elasticInOut,
+            animDuration: const Duration(seconds: 2),
+            animation: StyledToastAnimation.fadeScale,
+            borderRadius: BorderRadius.all(Radius.circular(12)));
+        /*_messangerKey.currentState?.showSnackBar(
           SnackBar(
             content: Text('Erro: ${e.message}'),
             action: SnackBarAction(
@@ -244,7 +265,7 @@ class _LoginState extends State<Login> {
               },
             ),
           ),
-        );
+        );*/
         print('deu erro' + e.message);
       }
     }

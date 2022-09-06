@@ -39,23 +39,41 @@ class _AddVideosState extends State<AddVideos> {
       listaWidgets.add(
         Column(
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    deleteVideo(x);
-                  },
-                  icon: Icon(Icons.delete_forever),
+            loading
+                ? CircularProgressIndicator()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          child: Image.asset(
+                            'assets/img/Medidas.jpeg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          deleteVideo(x);
+                        },
+                        icon: Icon(Icons.delete_forever),
+                      ),
+                    ],
+                  ),
+            Container(
+              width: 125,
+              child: ElevatedButton(
+                style: ButtonStyle(),
+                onPressed: () {
+                  pickAndUploadImage(x);
+                },
+                child: Row(
+                  children: [Icon(Icons.add), Text('${x}°Video')],
                 ),
-              ],
-            ),
-            ElevatedButton(
-              style: ButtonStyle(),
-              onPressed: () {
-                pickAndUploadImage(x);
-              },
-              child: Row(
-                children: [Icon(Icons.add), Text('${x}°Video')],
               ),
             ),
           ],
@@ -68,12 +86,14 @@ class _AddVideosState extends State<AddVideos> {
 
   loadVideos() async {
     refs = (await storage.ref('video').listAll()).items;
+    loading = true;
     for (var ref in refs) {
       arquivos.add(await ref.getDownloadURL());
     }
     setState(() {
       loading = false;
     });
+    print('tenho' + arquivos.length.toString() + ' videos');
   }
 
   Future<XFile?> getImage() async {
@@ -118,10 +138,12 @@ class _AddVideosState extends State<AddVideos> {
   }
 
   deleteVideo(int index) async {
+    print('tenho'+  refs.length.toString() + 'referencias');
     print('vou deletar o video' + index.toString());
     await storage.ref(refs[index].fullPath).delete();
     arquivos.removeAt(index);
     refs.removeAt(index);
+    loadVideos();
     setState(() {});
   }
 }

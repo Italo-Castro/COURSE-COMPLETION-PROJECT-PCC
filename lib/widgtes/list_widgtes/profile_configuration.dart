@@ -30,11 +30,13 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
     final usserLogged =
         Provider.of<UserRepository>(context, listen: false).usuarioLogado;
 
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadImages(usserLogged.uid);
-      _appEvaluation.text = usserLogged.avaliacaoApp != null ? usserLogged.avaliacaoApp.toString() : '';
-      _nickName.text = usserLogged.apelido != null? usserLogged.apelido.toString() : '';
+      _appEvaluation.text = usserLogged.avaliacaoApp != null
+          ? usserLogged.avaliacaoApp.toString()
+          : '';
+      _nickName.text =
+          usserLogged.apelido != null ? usserLogged.apelido.toString() : '';
     });
     return Scaffold(
       appBar: AppBar(
@@ -158,9 +160,9 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
       arquivos.add(await ref.getDownloadURL());
     }
     print('arquivos lengh' + arquivos.length.toString());
-  setState(() {
-    loading = false;
-  });
+    setState(() {
+      loading = false;
+    });
   }
 
   Future<XFile?> getImage() async {

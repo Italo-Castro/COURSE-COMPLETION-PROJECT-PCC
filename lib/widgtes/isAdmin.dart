@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:ta_pago/widgtes/chatPage.dart';
+import 'package:ta_pago/widgtes/viewVideos.dart';
+import 'RankingPage.dart';
 import 'alunos.dart';
 import 'list_widgtes/addVideos.dart';
 
@@ -15,16 +17,15 @@ class _IsAdminState extends State<IsAdmin> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
+    ViewVideos(),
     AddVideos(),
     Alunos(),
+    ChatPage(),
     Text(
       'Index 3: Settings',
       style: optionStyle,
     ),
+    RankingPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -54,6 +55,19 @@ class _IsAdminState extends State<IsAdmin> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person_pin),
             label: 'Alunos',
+            backgroundColor: Colors.purple,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Bate-Papo',
+            backgroundColor: Colors.purple,
+          ), BottomNavigationBarItem(
+            icon: Icon(Icons.add_chart),
+            label: 'Ranking',
+            backgroundColor: Colors.purple,
+          ), BottomNavigationBarItem(
+            icon: Icon(Icons.lunch_dining),
+            label: 'Dieta',
             backgroundColor: Colors.purple,
           ),
           BottomNavigationBarItem(
