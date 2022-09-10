@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
 import '../db_firestore.dart';
@@ -9,8 +10,8 @@ class UserRepository extends ChangeNotifier {
   List<Usuario> _lista = [];
   late FirebaseFirestore db;
   late AuthService auth;
-  late Usuario usuarioLogado = new Usuario('uid', 'nome', 'email', 'telefone', 'apelido', 'passworld', false, false);
-
+  late Usuario usuarioLogado = new Usuario(
+      'uid', 'nome', 'email', 'telefone', 'apelido', 'passworld', false, false);
 
   UserRepository({required this.auth}) {
     _startRepository();
@@ -39,7 +40,7 @@ class UserRepository extends ChangeNotifier {
   setUserLogado(Map<String, dynamic> result) {
     usuarioLogado = Usuario.fromJson(result);
     print('setei o usuario logado');
-    print('usuario logado'+usuarioLogado.toString());
+    print('usuario logado' + usuarioLogado.toString());
     notifyListeners();
   }
 
@@ -93,7 +94,7 @@ class UserRepository extends ChangeNotifier {
         'panturilha': user.panturilha != null ? user.panturilha : '',
       });
       _getUser(user);
-    } catch (e) {
+    } on FirebaseException catch (e) {
       print('erro ao fazer update de usuario no banco de dados' + e.toString());
     }
   }
@@ -119,9 +120,10 @@ class UserRepository extends ChangeNotifier {
         'coxas': user.coxas != null ? user.coxas : '',
         'panturilha': user.panturilha != null ? user.panturilha : '',
       });
-
     } catch (e) {
-      print('erro ao fazer update de usuario no banco de dados' + e.toString());
+      print('Erro ao fazer update');
+
+      throw Exception('Erro ao fazer update');
     }
   }
 
@@ -136,14 +138,17 @@ class UserRepository extends ChangeNotifier {
   }
 
   Future<List<Usuario>> readAll() async {
-     List<Map<String, dynamic>> listUser = [];
-
-    final snapshot = await db.collection('user').get();
-    snapshot.docs.forEach((doc) {
-      listUser.add(doc.data());
-      notifyListeners();
-    });
-    List<Usuario> lista =  usuarioLogado.fromArrayJson(listUser);
+    List<Map<String, dynamic>> listUser = [];
+    try {
+      final snapshot = await db.collection('user').get();
+      snapshot.docs.forEach((doc) {
+        listUser.add(doc.data());
+        notifyListeners();
+      });
+    } catch (e) {
+      print('erro ao buscar coleção user do firebase' + e.toString());
+    }
+    List<Usuario> lista = usuarioLogado.fromArrayJson(listUser);
     return lista;
   }
 

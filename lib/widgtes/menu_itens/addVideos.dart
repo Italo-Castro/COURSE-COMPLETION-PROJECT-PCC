@@ -1,8 +1,13 @@
 import 'dart:io';
-
+import 'package:collapsible_sidebar/collapsible_sidebar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import '../../repository/userRepository.dart';
+import '../isAdmin.dart';
+import '../menuItens.dart';
 
 class AddVideos extends StatefulWidget {
   const AddVideos({Key? key}) : super(key: key);
@@ -28,8 +33,31 @@ class _AddVideosState extends State<AddVideos> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: listWidgets(),
+
+    final usserLogged =
+        Provider.of<UserRepository>(context, listen: false).usuarioLogado;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Adicione os videos'),
+      ),
+      drawer: SafeArea(
+        child: CollapsibleSidebar(
+          items: menuItens(context, 'addVideos'),
+          textStyle: TextStyle(),
+          avatarImg: AssetImage('assets/img/personGymProfile.png'),
+          isCollapsed: false,
+          title: 'Ola ${usserLogged.nome}!',
+          titleStyle: TextStyle(
+            fontSize: 22,
+          ),
+          toggleTitleStyle: TextStyle(),
+          toggleTitle: ('Esconder'),
+          body: Container(),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(children: listWidgets()),
+      ),
     );
   }
 
@@ -138,7 +166,7 @@ class _AddVideosState extends State<AddVideos> {
   }
 
   deleteVideo(int index) async {
-    print('tenho'+  refs.length.toString() + 'referencias');
+    print('tenho' + refs.length.toString() + 'referencias');
     print('vou deletar o video' + index.toString());
     await storage.ref(refs[index].fullPath).delete();
     arquivos.removeAt(index);

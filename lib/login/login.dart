@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/login/register_user.dart';
+import 'package:ta_pago/service/connection.dart';
 import '../repository/userRepository.dart';
 import '../service/auth_service.dart';
 import '../widgtes/homePage.dart';
@@ -23,9 +24,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final usserLogged =
-        Provider.of<UserRepository>(context, listen: false).usuarioLogado;
-
     return MaterialApp(
       //rotas nomeadas
       routes: {
@@ -216,17 +214,21 @@ class _LoginState extends State<Login> {
             setState(() {
               loading = false;
             });
-            showToast('Usuário inativo, favor contate o administrador!',
-                context: contextParam,
-                textStyle: TextStyle(foreground: Paint()),
-                backgroundColor: Colors.red,
-                position: StyledToastPosition.bottom,
-                duration: const Duration(seconds: 5),
-                curve: Curves.elasticInOut,
-                animDuration: const Duration(seconds: 2),
-                animation: StyledToastAnimation.fadeScale,
-                borderRadius: BorderRadius.all(Radius.circular(12)));
-           
+            showToast(
+              'Usuário inativo, favor contate o administrador!',
+              context: contextParam,
+              textStyle: TextStyle(foreground: Paint()),
+              backgroundColor: Colors.red,
+              position: StyledToastPosition.bottom,
+              duration: const Duration(seconds: 5),
+              curve: Curves.elasticInOut,
+              animDuration: const Duration(seconds: 2),
+              animation: StyledToastAnimation.fadeScale,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+            );
+
             /*_messangerKey.currentState?.showSnackBar(
               SnackBar(
                 content:

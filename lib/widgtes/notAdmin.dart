@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pago/widgtes/list_widgtes/profile_configuration.dart';
+import 'package:ta_pago/widgtes/menu_itens/profile_configuration.dart';
 import 'package:ta_pago/widgtes/viewVideos.dart';
 import 'RankingPage.dart';
 import 'chatPage.dart';

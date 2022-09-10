@@ -57,7 +57,11 @@ class AuthService extends ChangeNotifier {
       } else if (e.code == 'wrong-password') {
         throw AuthException('Senha incorreta. Tente novamente');
       }
+      else if (e.code == 'network-request-failed') {
+        throw AuthException('Sem conexão com a internet!');
+      }
       print('erro ao lgoar->' + e.toString() + 'Erro especifico ' + e.code);
+
     }
   }
 
