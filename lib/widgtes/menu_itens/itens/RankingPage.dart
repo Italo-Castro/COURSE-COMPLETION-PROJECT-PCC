@@ -16,15 +16,14 @@ class RankingPage extends StatefulWidget {
 }
 
 class _RankingPageState extends State<RankingPage> {
-  List<Reference> refs = [];
-  List<String> arquivos = [];
-  final FirebaseStorage storage = FirebaseStorage.instance;
   bool loading = false;
 
   @override
   Widget build(BuildContext context) {
     final usserLogged =
         Provider.of<UserRepository>(context, listen: true).usuarioLogado;
+
+    Provider.of<UserRepository>(context, listen: true).loadImages();
 
     return Scaffold(
       appBar: AppBar(
@@ -86,9 +85,7 @@ class _RankingPageState extends State<RankingPage> {
     );
   }
 
-  RankingWidget(List<Usuario> lista) {
-    lista.sort((a, b) => (b.pontuacao).compareTo((a.pontuacao)));
-
+  TopThree(Usuario firstPlace, Usuario secondPlace, Usuario threePlace) {
     return Column(
       children: [
         Row(
@@ -109,7 +106,7 @@ class _RankingPageState extends State<RankingPage> {
                   ),
                 ),
                 const Text('1° Lugar'),
-                Text(lista[0].nome),
+                Text(firstPlace.nome),
               ],
             ),
           ],
@@ -133,7 +130,7 @@ class _RankingPageState extends State<RankingPage> {
                     ),
                   ),
                   Text('2 ° Lugar'),
-                  Text(lista[1].nome),
+                  Text(threePlace.nome),
                 ],
               ),
             ),
@@ -141,25 +138,35 @@ class _RankingPageState extends State<RankingPage> {
               padding: const EdgeInsets.only(left: 150),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                 children: [
-                    Container(
+                children: [
+                  Container(
                     width: 100.0,
                     height: 100.0,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      image:  DecorationImage(
-                        fit:  BoxFit.fill,
-                        image:  AssetImage('assets/img/personGymProfile.png'),
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/img/personGymProfile.png'),
                       ),
                     ),
                   ),
                   const Text('3° Lugar'),
-                  Text(lista[2].nome),
+                  Text(threePlace.nome),
                 ],
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  RankingWidget(List<Usuario> lista) {
+    lista.sort((a, b) => (b.pontuacao).compareTo((a.pontuacao)));
+
+    return Column(
+      children: [
+        TopThree(lista[0], lista[1], lista[2]),
         Expanded(
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
@@ -197,7 +204,7 @@ class _RankingPageState extends State<RankingPage> {
       ],
     );
   }
-
+}
 /* montaRanking() async {
     try {
       List<Usuario> listUsers =
@@ -228,4 +235,3 @@ class _RankingPageState extends State<RankingPage> {
       );
     }
   }*/
-}
