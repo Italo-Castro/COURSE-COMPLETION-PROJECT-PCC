@@ -26,7 +26,7 @@ class AuthService extends ChangeNotifier {
 
   _getUser() {
     usuario = _auth.currentUser;
-
+    print('pegando usuario autenticado' + usuario.toString());
     notifyListeners();
   }
 
@@ -47,26 +47,27 @@ class AuthService extends ChangeNotifier {
   login(String email, String senha) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
-      print(
-          'loguei e nçao deu erro posso executar alguma função pra carregar o usuario');
-
+      print('fiz loguin vou carregar o usuario');
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw AuthException('Email não encontrado. Cadastre-se.');
       } else if (e.code == 'wrong-password') {
         throw AuthException('Senha incorreta. Tente novamente');
-      }
-      else if (e.code == 'network-request-failed') {
+      } else if (e.code == 'network-request-failed') {
         throw AuthException('Sem conexão com a internet!');
+      } else if (e.code == 'user-disabled') {
+        throw AuthException('Usuário desabilitado!');
+      } else {
+        print('erro ao lgoar->' + e.toString() + 'Erro especifico ' + e.code);
+        throw AuthException('Erro ao logar');
       }
-      print('erro ao lgoar->' + e.toString() + 'Erro especifico ' + e.code);
-
     }
   }
 
   logout() async {
     await _auth.signOut();
+    print('sai do app');
     _getUser();
   }
 }

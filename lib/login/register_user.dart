@@ -35,6 +35,7 @@ class _RegisterUserState extends State<RegisterUser> {
   List<Reference> refs = [];
   List<String> arquivos = [];
   XFile? imageProfile;
+  File fileImage = new File('');
 
   @override
   Widget build(BuildContext context) {
@@ -49,41 +50,88 @@ class _RegisterUserState extends State<RegisterUser> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
+                  padding: const EdgeInsets.only(top: 20.0, left: 8, right: 8),
+                  child: Stack(
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          getImage();
-                        },
-                        child: Container(
+                      Container(
                           width: 190.0,
                           height: 190.0,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image:
-                                  AssetImage('assets/img/personGymProfile.png'),
-                            ),
+                            image: fileImage.path != ''
+                                ? DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: FileImage(fileImage))
+                                : const DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                        'assets/img/personGymProfile.png'),
+                                  ),
                           ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          Text('Clique na imagem para alterar sua foto'),
-                          Icon(Icons.arrow_circle_up),
-                        ],
-                      )
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.camera_alt,
+                                  size: 32,
+                                  color: Colors.blueAccent,
+                                ),
+                                onPressed: () {
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text('Carregar foto'),
+                                      content: const Text(
+                                          'Escolha de onde carregar a foto'),
+                                      actions: <Widget>[
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                getImage('camera');
+                                                Navigator.pop(context, 'OK');
+                                              },
+                                              child: Row(children: [
+                                                Icon(Icons.camera_alt_outlined),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text('Camera'),
+                                                )
+                                              ]),
+                                            ),
+                                          ],
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            getImage('galery');
+                                            Navigator.pop(context, 'OK');
+                                          },
+                                          child: Row(children: [
+                                            Icon(Icons.image),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text('Galeria'),
+                                            ),
+                                          ]),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          )),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 8, right: 8),
                   child: TextFormField(
-                    textAlign: TextAlign.center,
                     controller: _nameController,
                     validator: (value) {
                       if (value != null && value.isEmpty) {
@@ -102,7 +150,6 @@ class _RegisterUserState extends State<RegisterUser> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, right: 8.0, left: 8),
                   child: TextFormField(
-                    textAlign: TextAlign.center,
                     controller: _emailController,
                     validator: (value) {
                       if (value != null && value.isEmpty) {
@@ -129,7 +176,6 @@ class _RegisterUserState extends State<RegisterUser> {
                         child: TextFormField(
                           maxLength: 6,
                           obscureText: hidePassworld,
-                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value != null && value.isEmpty) {
                               return 'Por favor informar senha';
@@ -166,7 +212,6 @@ class _RegisterUserState extends State<RegisterUser> {
                         child: TextFormField(
                           maxLength: 6,
                           obscureText: hideRepeatPassworld,
-                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value != null && value.isEmpty) {
                               return 'Por favor informar senha';
@@ -199,11 +244,11 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+                  padding: const EdgeInsets.only(top: 20, right: 8.0, left: 8),
                   child: TextFormField(
                     controller: _phoneCotroller,
                     decoration: InputDecoration(
-                      label: Text('Telefone'),
+                      label: const Text('Telefone'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -211,22 +256,23 @@ class _RegisterUserState extends State<RegisterUser> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+                  padding: const EdgeInsets.only(top: 20, right: 8.0, left: 8),
                   child: TextFormField(
                     controller: _surnameController,
                     decoration: InputDecoration(
-                      label: Text('Apelido'),
+                      label: const Text('Apelido'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 280,
                   height: 50,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+                    padding:
+                        const EdgeInsets.only(top: 20, right: 8.0, left: 8),
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
@@ -234,14 +280,20 @@ class _RegisterUserState extends State<RegisterUser> {
                         }
                       },
                       child: loading
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               backgroundColor: Colors.white,
                               strokeWidth: 2,
                             )
-                          : Text('Cadastrar'),
+                          : const Text('Cadastrar'),
                     ),
                   ),
-                )
+                ),
+                Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+                    child: Text(''),
+                  ),
+                ),
               ],
             );
           }),
@@ -260,14 +312,17 @@ class _RegisterUserState extends State<RegisterUser> {
       bool isAdmin = false; //fazer regra
       var uid = context.read<AuthService>().usuario!.uid;
       Usuario user = new Usuario(
-          uid,
-          _nameController.text,
-          _emailController.text.trim(),
-          _phoneCotroller.text,
-          _surnameController.text,
-          _passworldController.text,
-          isAdmin,
-          true);
+        uid,
+        _nameController.text,
+        _emailController.text.trim(),
+        _phoneCotroller.text,
+        _surnameController.text,
+        _passworldController.text,
+        isAdmin,
+        true,
+        0,
+        0
+      );
       await context.read<UserRepository>().insertUser(user);
 
       //já inserir o usuario vou inserir a foto no storage
@@ -285,13 +340,12 @@ class _RegisterUserState extends State<RegisterUser> {
         ),
       );
     } on AuthException catch (e) {
-
       showToast(
         '${e.message}',
         context: context,
         textStyle: TextStyle(foreground: Paint()),
         backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
+        position: const StyledToastPosition(align: Alignment.topRight),
         duration: const Duration(seconds: 5),
         curve: Curves.elasticInOut,
         animDuration: const Duration(seconds: 2),
@@ -318,11 +372,16 @@ class _RegisterUserState extends State<RegisterUser> {
     }
   }
 
-  Future<XFile?> getImage() async {
+  Future<XFile?> getImage(String cameraOrGalery) async {
     final ImagePicker _picker = ImagePicker();
 
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    XFile? image = await _picker.pickImage(
+        source: cameraOrGalery == 'camera'
+            ? ImageSource.camera
+            : ImageSource.gallery);
     imageProfile = image;
+    fileImage = File(image!.path);
+    setState(() {});
   }
 
   uploadImage(String uidUsserLogged) async {

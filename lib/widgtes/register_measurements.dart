@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/repository/userRepository.dart';
 import '../model/Usuario.dart';
-
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'homePage.dart';
-
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 class RegisterMeasurements extends StatefulWidget {
   const RegisterMeasurements({Key? key}) : super(key: key);
 
@@ -21,6 +21,7 @@ class _RegisterMeasurementsState extends State<RegisterMeasurements> {
   final _quadrilController = TextEditingController();
   final _coxaController = TextEditingController();
   final _panturrilhaController = TextEditingController();
+  final _messangerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class _RegisterMeasurementsState extends State<RegisterMeasurements> {
                 child: TextFormField(
                   controller: _cinturaController,
                   decoration: InputDecoration(
-                    label: Text( 'Cintura (cm)'),
+                    label: Text('Cintura (cm)'),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
@@ -95,7 +96,7 @@ class _RegisterMeasurementsState extends State<RegisterMeasurements> {
                 child: TextFormField(
                   controller: _abdomenController,
                   decoration: InputDecoration(
-                    label: Text( 'Abdômen (cm)'),
+                    label: Text('Abdômen (cm)'),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(30),
@@ -146,15 +147,23 @@ class _RegisterMeasurementsState extends State<RegisterMeasurements> {
                   ),
                 ),
               ),
+              ElevatedButton(
+                onPressed: () => salvar(),
+                child: Text('Salvar'),
+              ),
               Text('Clique no botão para salvar.')
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            salvar();
+            print('oi');
+            showMaterialModalBottomSheet(
+              context: context,
+              builder: (context) => Container(child: Image.asset('assets/img/Medidas.jpeg')),
+            );
           },
-          child: Icon(Icons.save),
+          child: Icon(Icons.question_mark),
         ),
       ),
     );

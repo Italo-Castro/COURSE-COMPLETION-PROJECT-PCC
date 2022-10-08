@@ -12,10 +12,11 @@ class Usuario extends ChangeNotifier {
   String passworld;
   bool isAdmin;
   bool ativo;
-
+  int pontuacao;
+  double avaliacaoApp;
 //estes campos serão preenchidos posteriormente como o usuario já cadastrado, e o usuario deve conseguir usar sem preenche-los.
-  int? pontuacao;
-  int? avaliacaoApp;
+
+
   String? busto;
   String? torax;
   String? bracos;
@@ -26,7 +27,7 @@ class Usuario extends ChangeNotifier {
   String? panturilha;
 
   Usuario(this.uid, this.nome, this.email, this.telefone, this.apelido,
-      this.passworld, this.isAdmin, this.ativo);
+      this.passworld, this.isAdmin, this.ativo, this.pontuacao, this.avaliacaoApp);
 
   Usuario.fromJson(Map<String, dynamic> json)
       : uid = json['uid'].toString(),
@@ -37,7 +38,7 @@ class Usuario extends ChangeNotifier {
         passworld = json['passworld'].toString(),
         isAdmin = json['isAdmin'],
         pontuacao = json['pontuacao'],
-        avaliacaoApp = int.tryParse(json['avaliacaoApp'].toString()),
+        avaliacaoApp = double.tryParse(json['avaliacaoApp'].toString())!,
         busto = json['busto'].toString(),
         torax = json['torax'].toString(),
         bracos = json['bracos'].toString(),
@@ -55,7 +56,7 @@ class Usuario extends ChangeNotifier {
       var nome = list[x]['nome'].toString();
       var email = list[x]['email'].toString();
       var telefone = list[x]['telefone'].toString();
-      var apelido = list[x]['apelido'].toString();
+      var apelido =  list[x]['apelido'].toString();
       var passworld = list[x]['passworld'].toString();
       var isAdmin = list[x]['isAdmin'];
       var pontuacao = list[x]['pontuacao'];
@@ -69,13 +70,12 @@ class Usuario extends ChangeNotifier {
       var coxas = list[x]['coxas'].toString();
       var panturilha = list[x]['panturilha'].toString();
       var ativo = list[x]['ativo'];
-      Usuario user = new Usuario(
-          uid, nome, email, telefone, apelido, passworld, isAdmin, ativo);
+      Usuario user = new Usuario(uid, nome, email, telefone, apelido, passworld,
+          isAdmin, ativo, pontuacao, 0);
       listUser.add(user);
     }
 
     return listUser;
-
   }
 
   @override

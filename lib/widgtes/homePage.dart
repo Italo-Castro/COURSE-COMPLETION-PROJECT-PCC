@@ -4,6 +4,7 @@ import 'package:ta_pago/widgtes/isAdmin.dart';
 import 'package:ta_pago/widgtes/notAdmin.dart';
 
 import '../repository/userRepository.dart';
+import 'menu_itens/itens/viewVideos.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,6 +13,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final usserLogged =
         Provider.of<UserRepository>(context, listen: false).usuarioLogado;
-    return usserLogged.isAdmin ?  isAdmin() : const NotAdmin();
+    return MaterialApp(
+      home: ViewVideos(),
+      //usserLogged.isAdmin ? ViewVideos() : NotAdmin(),
+    );
   }
 }

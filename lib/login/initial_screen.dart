@@ -20,64 +20,64 @@ class InitialScreen extends StatelessWidget {
           ),
           child: Column(children: [
             Builder(
-              builder: (context) => Padding(
-                padding: EdgeInsets.only(bottom: 120),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(55),
-                        child: Container(
-                          width: 280,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Builder(
-                            builder: (context) => Container(
-                              child: ElevatedButton(
-                                child: const Text('Entrar'),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return Login();
+              builder: (context) =>
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 120),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(55),
+                            child: Container(
+                              width: 280,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Builder(
+                                builder: (context) =>
+                                    ElevatedButton(
+                                      child: const Text('Entrar'),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                               return const Login();
+                                            },
+                                          ),
+                                        );
                                       },
                                     ),
-                                  );
-                                },
                               ),
                             ),
                           ),
-                        ),
+                          Container(
+                            width: 280,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ElevatedButton(
+                              child: const Text('Cadastrar'),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return RegisterUser();
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                      Container(
-                        width: 280,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ElevatedButton(
-                          child: const Text('Cadastrar'),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return RegisterUser();
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              ),
             ),
           ]),
         ),

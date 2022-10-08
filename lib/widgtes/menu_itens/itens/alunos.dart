@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/service/connection.dart';
-import '../../model/Usuario.dart';
-import '../../repository/userRepository.dart';
+import '../../../model/Usuario.dart';
+import '../../../repository/userRepository.dart';
 import 'package:collapsible_sidebar/collapsible_sidebar.dart';
-import '../menuItens.dart';
+import '../menuItensAdmin.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+
+import '../menuItensNotAdmin.dart';
 
 class Alunos extends StatefulWidget {
   const Alunos({Key? key}) : super(key: key);
@@ -20,27 +22,29 @@ class _AlunosState extends State<Alunos> {
   final FirebaseStorage storage = FirebaseStorage.instance;
   List<Reference> refs = [];
   List<String> arquivos = [];
-  bool loading = true;
+  bool loading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadImages();
+    //loadImages();
     verifyConnectivity();
   }
 
   @override
   Widget build(BuildContext context) {
     final usserLogged =
-        Provider.of<UserRepository>(context, listen: false).usuarioLogado;
+        Provider.of<UserRepository>(context, listen: true).usuarioLogado;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Abaixo os alunos cadastrados'),
+        title: Text('Alunos cadastrados'),
       ),
       drawer: SafeArea(
         child: CollapsibleSidebar(
-          items: menuItens(context, 'alunos'),
+          items: usserLogged.isAdmin
+              ? menuItens(context, 'alunos')
+              : menuItensNotAdmin(context, 'alunos'),
           textStyle: TextStyle(),
           avatarImg: AssetImage('assets/img/personGymProfile.png'),
           isCollapsed: false,
@@ -105,13 +109,13 @@ class _AlunosState extends State<Alunos> {
                     width: 1,
                     height: 1,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2,
+                      strokeWidth: 1,
                     ))
                 : arquivos.isEmpty
                     ? Image.asset(
                         'assets/img/personGymProfile.png',
                       )
-                    : Image.network(arquivos[index]),
+                    : Image.network(''),
           ),
           title: Text(lista[index].nome), //refs[index].fullPath
           trailing: Checkbox(
@@ -127,7 +131,8 @@ class _AlunosState extends State<Alunos> {
   }
 
   userInactivate(Usuario user) async {
-    try {verifyConnectivity();
+    try {
+      verifyConnectivity();
 
       print('vou inativar' + user.nome);
       user.ativo = !user.ativo;
@@ -135,11 +140,13 @@ class _AlunosState extends State<Alunos> {
           .inactivateUser(user);
       setState(() {});
       showToast(
-        !user.ativo ? user.nome + ' Inativado' : user.nome + ' Ativado',
+        !user.ativo ? user.nome + ' Bloqueado' : user.nome + ' Liberado',
         context: context,
+        position: const StyledToastPosition(align: Alignment.topRight),
+        alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
         backgroundColor: Colors.greenAccent,
-        position: StyledToastPosition.bottom,
+
         duration: const Duration(seconds: 5),
         curve: Curves.fastLinearToSlowEaseIn,
         animDuration: const Duration(seconds: 2),
@@ -149,29 +156,67 @@ class _AlunosState extends State<Alunos> {
         ),
       );
     } catch (e) {
-      print('erro ao fazer atualizacao'+e.toString());
+      showToast(
+        'Ero ao fazer alteração no aluno.',
+        context: context,
+        backgroundColor: Colors.red,
+        position: StyledToastPosition.bottom,
+        animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
+        textStyle: TextStyle(foreground: Paint()),
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      );
+      print('erro ao fazer atualizacao' + e.toString());
     }
   }
 
   loadImages() async {
-    List<Usuario> listUsers =
-        await Provider.of<UserRepository>(context, listen: false).readAll();
+    try {
+      List<Usuario> listUsers =
+      await Provider.of<UserRepository>(context, listen: false).readAll();
 
-    for (var x = 0; x < listUsers.length; x++) {
-      refs = (await storage.ref('${listUsers[x].uid}/').listAll()).items;
-      for (var ref in refs) {
-        arquivos.add(await ref.getDownloadURL());
+      for (var x = 0; x < listUsers.length; x++) {
+        refs = (await storage.ref('${listUsers[x].uid}/').listAll()).items;
+        for (var ref in refs) {
+          arquivos.add(await ref.getDownloadURL());
+        }
       }
+      setState(() {
+        loading = false;
+      });
+    }catch (e) {
+      showToast(
+        'Ero ao fazer caregar imagens.',
+        context: context,
+        backgroundColor: Colors.red,
+        position: StyledToastPosition.bottom,
+        animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
+        textStyle: TextStyle(foreground: Paint()),
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      );
     }
-    setState(() {
-      loading = false;
-    });
-  }
+   }
 
   verifyConnectivity() async {
     final conn = await Provider.of<Connection>(context, listen: false)
         .checkConnectivty();
-
     return conn.toString();
   }
 }

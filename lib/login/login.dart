@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/login/register_user.dart';
@@ -27,8 +29,8 @@ class _LoginState extends State<Login> {
     return MaterialApp(
       //rotas nomeadas
       routes: {
-        "/login": (context) => Login(),
-        "/homePage": (context) => HomePage()
+        "/login": (context) => const Login(),
+        "/homePage": (context) => const HomePage()
       },
       scaffoldMessengerKey: _messangerKey,
       home: Scaffold(
@@ -37,7 +39,7 @@ class _LoginState extends State<Login> {
           centerTitle: true,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
+            children: const [
               Text(
                 'Desafio 21 Dias!',
                 textAlign: TextAlign.center,
@@ -53,11 +55,12 @@ class _LoginState extends State<Login> {
                 return Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 150.0),
+                      padding: const EdgeInsets.only(top: 150.0),
                       child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(right: 25.0, left: 25.0),
+                            padding:
+                                const EdgeInsets.only(right: 25.0, left: 25.0),
                             child: TextFormField(
                               textAlign: TextAlign.center,
                               controller: _emailController,
@@ -71,7 +74,7 @@ class _LoginState extends State<Login> {
                                 return null;
                               },
                               decoration: InputDecoration(
-                                label: Text('E-mail'),
+                                label: const Text('E-mail'),
                                 hintText: 'E-mail',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -80,7 +83,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(25),
+                            padding: const EdgeInsets.all(25),
                             child: Row(
                               children: [
                                 Expanded(
@@ -103,7 +106,7 @@ class _LoginState extends State<Login> {
                                         onPressed: () => setState(() {
                                           hidePassworld = !hidePassworld;
                                         }),
-                                        icon: Icon(Icons.remove_red_eye),
+                                        icon: const Icon(Icons.remove_red_eye),
                                       ),
                                       label: Text('Senha'),
                                       hintText: 'Senha',
@@ -127,21 +130,24 @@ class _LoginState extends State<Login> {
                                 login(context);
                               },
                               child: loading
-                                  ? const CircularProgressIndicator()
-                                  : Text(
+                                  ? const CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
                                       'Entrar',
                                       style: TextStyle(color: Colors.white70),
                                     ),
                             ),
                           ),
                           TextButton(
-                            child: const Text('Não tem cadastro? Cadastre-se'),
+                            child: const Text(
+                                'Não tem cadastro? Cadastre-se aqui!'),
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    print('vou navegar');
                                     return RegisterUser();
                                   },
                                 ),
@@ -163,6 +169,7 @@ class _LoginState extends State<Login> {
             onPressed: () {
               _messangerKey.currentState?.showSnackBar(
                 SnackBar(
+                  dismissDirection: DismissDirection.down,
                   backgroundColor: Colors.white70,
                   content: Text(
                     'Aplicativo desenvolvido em parceira com a personal trainer Auxiliadora Silva, e como proposta de conclusão do curso de Ciência da Computação do Unifor MG pelo aluno Italo Cesar Castro!',
@@ -186,6 +193,23 @@ class _LoginState extends State<Login> {
   }
 
   login(BuildContext contextParam) async {
+    final conectivity = await context.read<Connection>().checkConnectivty();
+    if (conectivity == 'Your mobile is no Internet Connection') {
+      showToast(
+        'Você parece estar sem internet, verifique sua conexão!!',
+        context: contextParam,
+        position: const StyledToastPosition(align: Alignment.topRight),
+        textStyle: TextStyle(foreground: Paint()),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+        curve: Curves.elasticInOut,
+        animDuration: const Duration(seconds: 2),
+        animation: StyledToastAnimation.fadeScale,
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      );
+    }
     if (formKey.currentState!.validate()) {
       try {
         setState(() {
@@ -195,7 +219,8 @@ class _LoginState extends State<Login> {
         //faz o login
         await context.read<AuthService>().login(
             _emailController.text.trim(), _passworldController.text.trim());
-        //carega o usuario
+
+       //carega o usuario
         await context.read<UserRepository>().readUser(
             Provider.of<AuthService>(context, listen: false).usuario!.uid);
 
@@ -203,60 +228,60 @@ class _LoginState extends State<Login> {
             Provider.of<UserRepository>(context, listen: false).usuarioLogado;
         if (usuarioLogado != null) {
           if (usuarioLogado.ativo) {
-            setState(() {
-              loading = false;
-            });
             Navigator.popAndPushNamed(
               contextParam,
               '/homePage',
             );
-          } else {
             setState(() {
               loading = false;
             });
+          } else if (!usuarioLogado.ativo) {
+            setState(() {
+              loading = false;
+            });
+            print('usuario na tela de login'+usuarioLogado.toString());
             showToast(
               'Usuário inativo, favor contate o administrador!',
               context: contextParam,
+              position: const StyledToastPosition(
+                  align: Alignment.topRight, offset: 70),
+              animation: StyledToastAnimation.slideFromRight,
+              alignment: const Alignment(50, 0),
               textStyle: TextStyle(foreground: Paint()),
-              backgroundColor: Colors.red,
-              position: StyledToastPosition.bottom,
-              duration: const Duration(seconds: 5),
-              curve: Curves.elasticInOut,
-              animDuration: const Duration(seconds: 2),
-              animation: StyledToastAnimation.fadeScale,
+              toastHorizontalMargin: 12,
+              isHideKeyboard: true,
+              reverseCurve: Curves.fastLinearToSlowEaseIn,
+              animDuration: const Duration(seconds: 1),
+              duration: const Duration(seconds: 3),
+              curve: Curves.fastLinearToSlowEaseIn,
               borderRadius: BorderRadius.all(
                 Radius.circular(12),
               ),
             );
-
-            /*_messangerKey.currentState?.showSnackBar(
-              SnackBar(
-                content:
-                    Text('Usuário inativo, favor contate o administrador!'),
-                action: SnackBarAction(
-                  label: 'OK',
-                  onPressed: () {
-                    // Code to execute.
-                  },
-                ),
-              ),
-            );*/
           }
         }
       } on AuthException catch (e) {
         setState(() {
           loading = false;
         });
-        showToast('${e.message}',
-            context: contextParam,
-            textStyle: TextStyle(foreground: Paint()),
-            backgroundColor: Colors.red,
-            position: StyledToastPosition.bottom,
-            duration: const Duration(seconds: 5),
-            curve: Curves.elasticInOut,
-            animDuration: const Duration(seconds: 2),
-            animation: StyledToastAnimation.fadeScale,
-            borderRadius: BorderRadius.all(Radius.circular(12)));
+        showToast(
+          '${e.message}',
+          context: contextParam,
+          backgroundColor: Colors.red,
+          position: StyledToastPosition.bottom,
+          animation: StyledToastAnimation.slideFromRight,
+          alignment: const Alignment(50, 0),
+          textStyle: TextStyle(foreground: Paint()),
+          toastHorizontalMargin: 12,
+          isHideKeyboard: true,
+          reverseCurve: Curves.fastLinearToSlowEaseIn,
+          animDuration: const Duration(seconds: 1),
+          duration: const Duration(seconds: 3),
+          curve: Curves.fastLinearToSlowEaseIn,
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        );
         /*_messangerKey.currentState?.showSnackBar(
           SnackBar(
             content: Text('Erro: ${e.message}'),

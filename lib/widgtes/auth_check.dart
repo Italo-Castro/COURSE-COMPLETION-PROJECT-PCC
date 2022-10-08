@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ta_pago/login/initial_screen.dart';
-
+import 'package:ta_pago/repository/userRepository.dart';
+import 'package:ta_pago/widgtes/homePage.dart';
 
 import '../login/login.dart';
 import '../service/auth_service.dart';
@@ -14,17 +15,17 @@ class AuthCheck extends StatefulWidget {
 }
 
 class _AuthCheckState extends State<AuthCheck> {
-
   @override
   Widget build(BuildContext context) {
     AuthService auth = Provider.of<AuthService>(context);
+    UserRepository user = Provider.of<UserRepository>(context, listen: true);
 
     if (auth.isLoading) {
       return loading();
-    } else if (auth.usuario == null) {
+    } else if (auth.usuario == null || user.usuarioLogado.email == 'email') {
       return const Login();
     } else {
-      return const InitialScreen();
+      return const HomePage();
     }
   }
 

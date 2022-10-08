@@ -1,71 +1,46 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:ta_pago/widgtes/menu_itens/profile_configuration.dart';
-import 'package:ta_pago/widgtes/viewVideos.dart';
-import 'RankingPage.dart';
-import 'chatPage.dart';
+import 'package:provider/provider.dart';
+import '../repository/userRepository.dart';
+import 'package:collapsible_sidebar/collapsible_sidebar.dart';
+import 'menu_itens/menuItensAdmin.dart';
+import 'menu_itens/menuItensNotAdmin.dart';
 
 class NotAdmin extends StatefulWidget {
-  const NotAdmin({Key? key}) : super(key: key);
-
   @override
   State<NotAdmin> createState() => _NotAdminState();
 }
 
 class _NotAdminState extends State<NotAdmin> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    ViewVideos(),
-    ChatPage(),
-    RankingPage(),
-    Text('Dieta'),
-    ProfileConfigurations(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  List<Reference> refs = [];
+  List<String> arquivos = [];
+  final FirebaseStorage storage = FirebaseStorage.instance;
 
   @override
   Widget build(BuildContext context) {
+    final usserLogged =
+        Provider.of<UserRepository>(context, listen: false).usuarioLogado;
+
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      appBar: AppBar(
+        title: Text('Bem vindo ao projeto!'),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Videos',
-            backgroundColor: Colors.red,
+      drawer: SafeArea(
+        child: CollapsibleSidebar(
+          items: usserLogged.isAdmin
+              ? menuItens(context, 'rankingPage')
+              : menuItensNotAdmin(context, 'rankingPage'),
+          textStyle: TextStyle(),
+          avatarImg: AssetImage('assets/img/personGymProfile.png'),
+          isCollapsed: false,
+          title: 'Ola !',
+          titleStyle: TextStyle(
+            fontSize: 22,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Bate Papo',
-            backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_chart),
-            label: 'Ranking',
-            backgroundColor: Colors.purple,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lunch_dining_rounded),
-            label: 'Dieta',
-            backgroundColor: Colors.pink,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configurações',
-            backgroundColor: Colors.pink,
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+          toggleTitleStyle: TextStyle(),
+          toggleTitle: ('Esconder'),
+          body: Container(),
+        ),
       ),
     );
   }

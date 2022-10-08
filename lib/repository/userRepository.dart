@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 
 import '../db_firestore.dart';
@@ -10,8 +11,15 @@ class UserRepository extends ChangeNotifier {
   List<Usuario> _lista = [];
   late FirebaseFirestore db;
   late AuthService auth;
-  late Usuario usuarioLogado = new Usuario(
-      'uid', 'nome', 'email', 'telefone', 'apelido', 'passworld', false, false);
+
+  String imageProfile1 = '';
+
+  List<Reference> refs = [];
+  List<String> arquivos = [];
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
+  late Usuario usuarioLogado = new Usuario('uid', 'nome', 'email', 'telefone',
+      'apelido', 'passworld', false, false, 0, 0);
 
   UserRepository({required this.auth}) {
     _startRepository();
@@ -56,7 +64,7 @@ class UserRepository extends ChangeNotifier {
         'isAdmin': user.isAdmin,
         'ativo': user.ativo,
         'pontuacao': user.pontuacao != null ? user.pontuacao : 0,
-        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : '0',
+        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : 0,
         'busto': user.busto != null ? user.busto : '',
         'torax': user.torax != null ? user.torax : '',
         'bracos': user.bracos != null ? user.bracos : '',
@@ -82,16 +90,16 @@ class UserRepository extends ChangeNotifier {
         'apelido': user.apelido,
         'isAdmin': user.isAdmin,
         'ativo': user.ativo,
-        'pontuacao': user.pontuacao != null ? user.pontuacao : 0,
-        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : '0',
-        'busto': user.busto != null ? user.busto : '',
-        'torax': user.torax != null ? user.torax : '',
-        'bracos': user.bracos != null ? user.bracos : '',
-        'cintura': user.cintura != null ? user.cintura : '',
-        'abdomen': user.abdomen != null ? user.abdomen : '',
-        'quadril': user.quadril != null ? user.quadril : '',
-        'coxas': user.coxas != null ? user.coxas : '',
-        'panturilha': user.panturilha != null ? user.panturilha : '',
+        'pontuacao': user.pontuacao,
+        'avaliacaoApp': user.avaliacaoApp,
+        'busto': user.busto ?? '',
+        'torax': user.torax ?? '',
+        'bracos': user.bracos ?? '',
+        'cintura': user.cintura ?? '',
+        'abdomen': user.abdomen ?? '',
+        'quadril': user.quadril ?? '',
+        'coxas': user.coxas ?? '',
+        'panturilha': user.panturilha ?? '',
       });
       _getUser(user);
     } on FirebaseException catch (e) {
@@ -110,7 +118,7 @@ class UserRepository extends ChangeNotifier {
         'isAdmin': user.isAdmin,
         'ativo': user.ativo,
         'pontuacao': user.pontuacao != null ? user.pontuacao : 0,
-        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : '0',
+        'avaliacaoApp': user.avaliacaoApp != null ? user.avaliacaoApp : 0,
         'busto': user.busto != null ? user.busto : '',
         'torax': user.torax != null ? user.torax : '',
         'bracos': user.bracos != null ? user.bracos : '',
@@ -128,8 +136,15 @@ class UserRepository extends ChangeNotifier {
   }
 
   readUser(String uid) async {
-    final snapshot = await db.collection('user').doc(uid).get();
-    this.setUserLogado(snapshot.data()!);
+    try {
+      final snapshot = await db.collection('user').doc(uid).get();
+      this.setUserLogado(snapshot.data()!);
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        throw AuthException('Sem permissão para acessar banco de dados.');
+      }
+      print("deu erro ao ler a coleção" + e.toString());
+    }
   }
 
   revalidateUser(String uid) async {
@@ -147,6 +162,7 @@ class UserRepository extends ChangeNotifier {
       });
     } catch (e) {
       print('erro ao buscar coleção user do firebase' + e.toString());
+      throw AuthException('Sem permissão para acessar banco de dados.');
     }
     List<Usuario> lista = usuarioLogado.fromArrayJson(listUser);
     return lista;
