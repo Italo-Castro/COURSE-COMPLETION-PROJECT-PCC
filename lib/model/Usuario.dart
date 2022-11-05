@@ -15,7 +15,7 @@ class Usuario extends ChangeNotifier {
   int pontuacao;
   double avaliacaoApp;
 //estes campos serão preenchidos posteriormente como o usuario já cadastrado, e o usuario deve conseguir usar sem preenche-los.
-
+  List<bool> listaVideosAssistidos;
 
   String? busto;
   String? torax;
@@ -27,7 +27,7 @@ class Usuario extends ChangeNotifier {
   String? panturilha;
 
   Usuario(this.uid, this.nome, this.email, this.telefone, this.apelido,
-      this.passworld, this.isAdmin, this.ativo, this.pontuacao, this.avaliacaoApp);
+      this.passworld, this.isAdmin, this.ativo, this.pontuacao, this.avaliacaoApp, this.listaVideosAssistidos);
 
   Usuario.fromJson(Map<String, dynamic> json)
       : uid = json['uid'].toString(),
@@ -47,7 +47,8 @@ class Usuario extends ChangeNotifier {
         quadril = json['quadril'].toString(),
         coxas = json['coxas'].toString(),
         panturilha = json['panturilha'].toString(),
-        ativo = json['ativo'];
+        ativo = json['ativo'],
+        listaVideosAssistidos = new List<bool>.from(json['listaVideosAssistidos']);
 
   List<Usuario> fromArrayJson(List<Map<String, dynamic>> list) {
     List<Usuario> listUser = [];
@@ -70,8 +71,9 @@ class Usuario extends ChangeNotifier {
       var coxas = list[x]['coxas'].toString();
       var panturilha = list[x]['panturilha'].toString();
       var ativo = list[x]['ativo'];
+      var listaVideosAssitidos = list[x]['listaVideosAssitidos'];
       Usuario user = new Usuario(uid, nome, email, telefone, apelido, passworld,
-          isAdmin, ativo, pontuacao, 0);
+          isAdmin, ativo, pontuacao, 0,listaVideosAssitidos);
       listUser.add(user);
     }
 

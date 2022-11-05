@@ -37,7 +37,14 @@ class _AddVideosState extends State<AddVideos> {
         Provider.of<UserRepository>(context, listen: true).usuarioLogado;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar videos'),
+        backgroundColor: Colors.orange,
+        shadowColor: Colors.black54,
+        centerTitle: true,
+        title: Text(
+          'Adicionar videos',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 22),
+        ),
       ),
       drawer: SafeArea(
         child: CollapsibleSidebar(
@@ -83,10 +90,10 @@ class _AddVideosState extends State<AddVideos> {
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          color: Colors.blue,
+          color: Colors.orange,
           height: 250,
           child: Card(
-            shadowColor: Colors.blueAccent,
+            shadowColor: Colors.red,
             elevation: 120,
             child: Center(
               child: Row(
@@ -139,10 +146,10 @@ class _AddVideosState extends State<AddVideos> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            color: Colors.blue,
+            color: Colors.orange,
             height: 250,
             child: Card(
-              shadowColor: Colors.blueAccent,
+              shadowColor: Colors.red,
               elevation: 120,
               child: Center(
                 child: Row(
@@ -203,6 +210,7 @@ class _AddVideosState extends State<AddVideos> {
       for (var ref in refs) {
         arquivos.add(await ref.getDownloadURL());
       }
+      arquivos.sort((a, b) => (b.toString()).compareTo((a.toString())));
       setState(() {
         loading = false;
       });
@@ -306,14 +314,17 @@ class _AddVideosState extends State<AddVideos> {
         showToast(
           'Video de numero ${index} não existe no banco  de dados \n Impossvel deletar.',
           context: context,
-          textStyle: TextStyle(foreground: Paint()),
-          backgroundColor: Colors.red,
-          position: const StyledToastPosition(align: Alignment.topRight),
-          duration: const Duration(seconds: 5),
-          curve: Curves.fastLinearToSlowEaseIn,
-          animDuration: const Duration(seconds: 2),
+          backgroundColor: Colors.orange,
+          position: StyledToastPosition.right,
           animation: StyledToastAnimation.slideFromRight,
+          alignment: const Alignment(50, 0),
+          textStyle: TextStyle(foreground: Paint()),
+          toastHorizontalMargin: 12,
+          isHideKeyboard: true,
           reverseCurve: Curves.fastLinearToSlowEaseIn,
+          animDuration: const Duration(seconds: 1),
+          duration: const Duration(seconds: 3),
+          curve: Curves.fastLinearToSlowEaseIn,
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
@@ -339,31 +350,3 @@ class _AddVideosState extends State<AddVideos> {
     }
   }
 }
-/*
-Column(
-      children: [
-        listWidgets(),
-        Row(
-          children: [
-            Container(
-              child: Image.asset(
-                'assets/img/Medidas.jpeg',
-                width: 50,
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.delete_forever),
-            ),
-          ],
-        ),
-        ElevatedButton(
-          style: ButtonStyle(),
-          onPressed: () {},
-          child: Row(
-            children: [Icon(Icons.add), Text('1°Video')],
-          ),
-        ),
-      ],
-    );
- */

@@ -20,8 +20,8 @@ class _VideoAppState extends State<VideoApp> {
   @override
   initState() {
     super.initState();
-
-    _controller = VideoPlayerController.network(widget.videoUrl);
+    print(' videoUrl ${widget.videoUrl}');
+    _controller = VideoPlayerController.network('${widget.videoUrl}');
     _chewieController = ChewieController(
       allowedScreenSleep: false,
       allowFullScreen: true,
@@ -56,7 +56,7 @@ class _VideoAppState extends State<VideoApp> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 350,
-      height: 350,
+      height: 200,
       child: Chewie(
         controller: _chewieController,
       ),

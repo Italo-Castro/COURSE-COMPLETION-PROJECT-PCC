@@ -14,12 +14,10 @@ class UserRepository extends ChangeNotifier {
 
   String imageProfile1 = '';
 
-  List<Reference> refs = [];
-  List<String> arquivos = [];
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   late Usuario usuarioLogado = new Usuario('uid', 'nome', 'email', 'telefone',
-      'apelido', 'passworld', false, false, 0, 0);
+      'apelido', 'passworld', false, false, 0, 0, [false]);
 
   UserRepository({required this.auth}) {
     _startRepository();
@@ -53,6 +51,9 @@ class UserRepository extends ChangeNotifier {
   }
 
   insertUser(Usuario user) async {
+    for (var x=0;x<21;x++) {
+      user.listaVideosAssistidos.add(false);
+    }
     try {
       await db.collection('user').doc(auth.usuario!.uid).set({
         'uid': user.uid,
@@ -73,6 +74,7 @@ class UserRepository extends ChangeNotifier {
         'quadril': user.quadril != null ? user.quadril : '',
         'coxas': user.coxas != null ? user.coxas : '',
         'panturilha': user.panturilha != null ? user.panturilha : '',
+        'listaVideosAssistidos' : user.listaVideosAssistidos
       });
       _getUser(user);
     } catch (e) {
@@ -100,6 +102,7 @@ class UserRepository extends ChangeNotifier {
         'quadril': user.quadril ?? '',
         'coxas': user.coxas ?? '',
         'panturilha': user.panturilha ?? '',
+        'listaVideosAssistidos' :user.listaVideosAssistidos
       });
       _getUser(user);
     } on FirebaseException catch (e) {
@@ -158,8 +161,8 @@ class UserRepository extends ChangeNotifier {
       final snapshot = await db.collection('user').get();
       snapshot.docs.forEach((doc) {
         listUser.add(doc.data());
-        notifyListeners();
       });
+      notifyListeners();
     } catch (e) {
       print('erro ao buscar coleção user do firebase' + e.toString());
       throw AuthException('Sem permissão para acessar banco de dados.');
@@ -172,5 +175,25 @@ class UserRepository extends ChangeNotifier {
     await db.collection('user/${auth.usuario!.uid}').doc(usuario.nome).delete();
     _lista.remove(usuario);
     notifyListeners();
+  }
+
+  // loadVideos() async {
+  //     refs = (await storage.ref('video').listAll()).items;
+  //    print('foi encontrado ${refs.length} videos no banco de dados');
+  //     for (var ref in refs) {
+  //       arquivos.add(await ref.getDownloadURL());
+  //     }
+  //
+  //  }
+  Future<List<String>> loadVideo(int numeroVideo) async {
+    List<Reference> refs =
+        (await storage.ref('video/${numeroVideo}.mp4').listAll()).items;
+    List<String> arquivos = [];
+    for (var ref in refs) {
+      arquivos.add(await ref.getDownloadURL());
+    }
+
+
+    return arquivos;
   }
 }

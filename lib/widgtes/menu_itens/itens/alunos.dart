@@ -38,7 +38,14 @@ class _AlunosState extends State<Alunos> {
         Provider.of<UserRepository>(context, listen: true).usuarioLogado;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Alunos cadastrados'),
+        backgroundColor: Colors.orange,
+        shadowColor: Colors.black54,
+        centerTitle: true,
+        title: Text(
+          'Alunos Cadastrados!',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 22),
+        ),
       ),
       drawer: SafeArea(
         child: CollapsibleSidebar(
@@ -100,29 +107,33 @@ class _AlunosState extends State<Alunos> {
   UserWidget(List<Usuario> lista) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          leading: SizedBox(
-            width: 60,
-            height: 40,
-            child: loading
-                ? Container(
-                    width: 1,
-                    height: 1,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1,
-                    ))
-                : arquivos.isEmpty
-                    ? Image.asset(
-                        'assets/img/personGymProfile.png',
-                      )
-                    : Image.network(''),
-          ),
-          title: Text(lista[index].nome), //refs[index].fullPath
-          trailing: Checkbox(
-            value: lista[index].ativo,
-            onChanged: (bool? value) {
-              userInactivate(lista[index]);
-            },
+        return Card(
+          shadowColor: Colors.orange,
+          elevation: 2,
+          child: ListTile(
+            leading: SizedBox(
+              width: 60,
+              height: 40,
+              child: loading
+                  ? Container(
+                      width: 1,
+                      height: 1,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1,
+                      ))
+                  : arquivos.isEmpty
+                      ? Image.asset(
+                          'assets/img/personGymProfile.png',
+                        )
+                      : Image.network(''),
+            ),
+            title: Text(lista[index].nome), //refs[index].fullPath
+            trailing: Checkbox(
+              value: lista[index].ativo,
+              onChanged: (bool? value) {
+                userInactivate(lista[index]);
+              },
+            ),
           ),
         );
       },
@@ -142,25 +153,27 @@ class _AlunosState extends State<Alunos> {
       showToast(
         !user.ativo ? user.nome + ' Bloqueado' : user.nome + ' Liberado',
         context: context,
-        position: const StyledToastPosition(align: Alignment.topRight),
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
+        animation: StyledToastAnimation.slideFromRight,
         alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
-        backgroundColor: Colors.greenAccent,
-
-        duration: const Duration(seconds: 5),
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
         curve: Curves.fastLinearToSlowEaseIn,
-        animDuration: const Duration(seconds: 2),
-        animation: StyledToastAnimation.fadeScale,
         borderRadius: BorderRadius.all(
-          Radius.circular(22),
+          Radius.circular(12),
         ),
       );
     } catch (e) {
       showToast(
         'Ero ao fazer alteração no aluno.',
         context: context,
-        backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
         animation: StyledToastAnimation.slideFromRight,
         alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
@@ -181,7 +194,7 @@ class _AlunosState extends State<Alunos> {
   loadImages() async {
     try {
       List<Usuario> listUsers =
-      await Provider.of<UserRepository>(context, listen: false).readAll();
+          await Provider.of<UserRepository>(context, listen: false).readAll();
 
       for (var x = 0; x < listUsers.length; x++) {
         refs = (await storage.ref('${listUsers[x].uid}/').listAll()).items;
@@ -192,12 +205,12 @@ class _AlunosState extends State<Alunos> {
       setState(() {
         loading = false;
       });
-    }catch (e) {
+    } catch (e) {
       showToast(
         'Ero ao fazer caregar imagens.',
         context: context,
-        backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
         animation: StyledToastAnimation.slideFromRight,
         alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
@@ -212,7 +225,7 @@ class _AlunosState extends State<Alunos> {
         ),
       );
     }
-   }
+  }
 
   verifyConnectivity() async {
     final conn = await Provider.of<Connection>(context, listen: false)

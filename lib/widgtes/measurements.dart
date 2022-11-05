@@ -8,6 +8,7 @@ import 'homePage.dart';
 class Measurements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('dentro do medidas');
     var userLogado = context.read<UserRepository>().usuarioLogado;
     return Scaffold(
       appBar: AppBar(
@@ -15,8 +16,8 @@ class Measurements extends StatelessWidget {
             'Bem vindo ${userLogado.apelido != '' ? userLogado.apelido : userLogado.nome} ao desafio 21 dias!!!'),
       ),
       body: SimpleDialog(
-        titlePadding: EdgeInsets.all(15),
-        insetPadding: EdgeInsets.all(15),
+        titlePadding: const EdgeInsets.all(15),
+        insetPadding: const EdgeInsets.all(15),
         title: const Text(
             'Na proxima tela informe alguma medidas, siga a foto em caso de duvidas!'),
         children: <Widget>[

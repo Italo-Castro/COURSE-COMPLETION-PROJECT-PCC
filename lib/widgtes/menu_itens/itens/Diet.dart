@@ -25,8 +25,14 @@ class _DietState extends State<Diet> {
     // loadImages(usserLogged.uid);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Alimentação do projeto!'),
+        backgroundColor: Colors.orange,
+        shadowColor: Colors.black54,
         centerTitle: true,
+        title: Text(
+          'Dieta',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 22),
+        ),
       ),
       drawer: SafeArea(
         child: CollapsibleSidebar(
@@ -47,65 +53,35 @@ class _DietState extends State<Diet> {
           body: Container(),
         ),
       ),
-      body: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: Text('Siga a dieta durante os 21 dias!',
-                      style: TextStyle(color: Colors.redAccent)),
-                  elevation: 21,
-                ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:  [
+            Padding(
+              padding: const EdgeInsets.all(28.0),
+              child: const Card(
+                child: const Text('Siga a dieta durante os 21 dias!',
+                    style: TextStyle(color: Colors.redAccent, fontSize: 22)),
+                elevation: 21,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                usserLogged.isAdmin
-                    ? Container(
-                        child: Text("admin"),
-                      )
-                    : Card(
-                        child: Text('Café da Manhã '),
-                      ),
-                Card(
-                  child: Text(
-                    '1 copo de água com limão e uma colher de chia. \n \n 1º Opção -> 2 ovos mechidos.  \n\n 2º Opção -> 1 fatia de pão integral  xícara de café sem açúcar. \n \n 3º Opção ->  Meio Mamão.',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  elevation: 21,
-                  borderOnForeground: true,
-                  shadowColor: Colors.blueAccent,
-                ),
-                usserLogged.isAdmin
-                    ? Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Carregar arquivo '),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Baixar receita'),
-                          )
-                        ],
-                      )
-                    : ElevatedButton(
-                        onPressed: () {},
-                        child: Text('Carregar arquivo'),
-                      ),
-              ],
             ),
-          )
-        ],
+            Center(
+              child: usserLogged.isAdmin
+                  ? Column(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {}, child: Text('Postar Arquivo Dieta!'),),
+                      ElevatedButton(
+                        onPressed: () {}, child: Text('Baixar Arquivo Dieta!'),),
+                    ],
+                  )
+                  : ElevatedButton(
+                      onPressed: () {}, child: Text('Baixar Arquivo Dieta!'),),
+            ),
+
+          ],
+        ),
       ),
     );
   }

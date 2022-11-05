@@ -58,7 +58,10 @@ class AuthService extends ChangeNotifier {
         throw AuthException('Sem conexão com a internet!');
       } else if (e.code == 'user-disabled') {
         throw AuthException('Usuário desabilitado!');
-      } else {
+      } else if (e.code == 'too-many-requests') {
+        throw AuthException('Aguarde alguns segundos e tente novamente!');
+      }
+      else {
         print('erro ao lgoar->' + e.toString() + 'Erro especifico ' + e.code);
         throw AuthException('Erro ao logar');
       }

@@ -42,12 +42,16 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
     });
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.orange,
+        shadowColor: Colors.blueAccent,
+        elevation: 10,
+        centerTitle: true,
         title: Text(
           'Configurações do perfil de ${usserLogged.nome}',
           textAlign: TextAlign.center,
           style: TextStyle(),
         ),
-        centerTitle: true,
+
       ),
       drawer: SafeArea(
         child: CollapsibleSidebar(
@@ -72,7 +76,7 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 5, right: 8.0, left: 8),
+              padding: EdgeInsets.only(top: 25, right: 8.0, left: 8),
               child: Card(
                 child: Text(
                     'Até agora você conquistou ${usserLogged.pontuacao != null ? usserLogged.pontuacao : 0} pontos'),
@@ -186,19 +190,21 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
   saveUser(Usuario usserLooged) {
     try {
       usserLooged.apelido = _nickName.text;
-      usserLooged.avaliacaoApp = double.tryParse(_appEvaluation.text)!;
       Provider.of<UserRepository>(context, listen: false).update(usserLooged);
       showToast(
         'Informações Atualizadas!',
-        alignment: const Alignment(50, 0),
         context: context,
+        backgroundColor: Colors.amber[600],
+        position: StyledToastPosition.right,
+        animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
-        backgroundColor: Colors.blueAccent,
-        position: StyledToastPosition.bottom,
-        duration: const Duration(seconds: 5),
-        curve: Curves.elasticInOut,
-        animDuration: const Duration(seconds: 2),
-        animation: StyledToastAnimation.fadeScale,
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
         borderRadius: BorderRadius.all(
           Radius.circular(12),
         ),
@@ -206,15 +212,18 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
     } catch (e) {
       showToast(
         'Erro ao salvar infomrações do perfil!',
-        alignment: const Alignment(50, 0),
         context: context,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
+        animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
-        backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
-        duration: const Duration(seconds: 5),
-        curve: Curves.elasticInOut,
-        animDuration: const Duration(seconds: 2),
-        animation: StyledToastAnimation.fadeScale,
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
         borderRadius: BorderRadius.all(
           Radius.circular(12),
         ),

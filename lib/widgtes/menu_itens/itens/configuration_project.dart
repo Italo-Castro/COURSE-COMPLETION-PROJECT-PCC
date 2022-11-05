@@ -37,8 +37,8 @@ class _ConfigurationProjectState extends State<ConfigurationProject> {
       showToast(
         'oi',
         context: context,
-        backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
         animation: StyledToastAnimation.slideFromRight,
         alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
@@ -48,7 +48,7 @@ class _ConfigurationProjectState extends State<ConfigurationProject> {
         animDuration: const Duration(seconds: 1),
         duration: const Duration(seconds: 3),
         curve: Curves.fastLinearToSlowEaseIn,
-        borderRadius: const BorderRadius.all(
+        borderRadius: BorderRadius.all(
           Radius.circular(12),
         ),
       );
@@ -101,11 +101,11 @@ class _ConfigurationProjectState extends State<ConfigurationProject> {
                             ),
                     ),
                     const Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: const Text("Nenhuma configuração encontrada!"),
+                      padding:  EdgeInsets.only(top: 16.0),
+                      child:  Text("Nenhuma configuração encontrada!"),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 35),
+                    const Padding(
+                      padding:  EdgeInsets.only(top: 35),
                       child: Text('Defina a data inicial e final do projeto'),
                     ),
                     FloatingActionButton(
@@ -113,9 +113,9 @@ class _ConfigurationProjectState extends State<ConfigurationProject> {
                       onPressed: () async {
                         var dataInicialEscolhida = await showDatePicker(
                           context: context,
-                          initialDate: DateTime(2022, 01, 01),
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(2022),
-                          lastDate: DateTime(2025),
+                          lastDate: DateTime.now().add(Duration(days: 21)),
                         );
                         setState(() {
                           dataInicio =

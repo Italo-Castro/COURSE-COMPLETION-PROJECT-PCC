@@ -36,6 +36,9 @@ class _LoginState extends State<Login> {
       home: Scaffold(
         extendBody: true,
         appBar: AppBar(
+          backgroundColor: Colors.orange,
+          shadowColor: Colors.blueAccent,
+          elevation: 10,
           centerTitle: true,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -43,6 +46,10 @@ class _LoginState extends State<Login> {
               Text(
                 'Desafio 21 Dias!',
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
           ),
@@ -62,6 +69,9 @@ class _LoginState extends State<Login> {
                             padding:
                                 const EdgeInsets.only(right: 25.0, left: 25.0),
                             child: TextFormField(
+                              toolbarOptions: ToolbarOptions(
+                                selectAll: true,
+                              ),
                               textAlign: TextAlign.center,
                               controller: _emailController,
                               validator: (value) {
@@ -88,6 +98,9 @@ class _LoginState extends State<Login> {
                               children: [
                                 Expanded(
                                   child: TextFormField(
+                                    toolbarOptions: ToolbarOptions(
+                                      selectAll: true,
+                                    ),
                                     maxLength: 6,
                                     textAlign: TextAlign.center,
                                     obscureText: hidePassworld,
@@ -102,11 +115,15 @@ class _LoginState extends State<Login> {
                                       return null;
                                     },
                                     decoration: InputDecoration(
+                                      errorBorder: InputBorder.none,
                                       suffixIcon: IconButton(
                                         onPressed: () => setState(() {
                                           hidePassworld = !hidePassworld;
                                         }),
-                                        icon: const Icon(Icons.remove_red_eye),
+                                        icon: const Icon(
+                                          Icons.remove_red_eye,
+                                          color: Colors.orange,
+                                        ),
                                       ),
                                       label: Text('Senha'),
                                       hintText: 'Senha',
@@ -126,23 +143,35 @@ class _LoginState extends State<Login> {
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: ElevatedButton(
+                              style: ButtonStyle(
+                                  elevation: MaterialStateProperty.resolveWith(
+                                      (states) => 2),
+                                  backgroundColor:
+                                      MaterialStateColor.resolveWith(
+                                          (states) => Colors.white),
+                                  shadowColor: MaterialStateColor.resolveWith(
+                                      (states) => Colors.blueAccent)),
                               onPressed: () {
                                 login(context);
                               },
                               child: loading
                                   ? const CircularProgressIndicator(
                                       strokeWidth: 1,
-                                      color: Colors.white,
+                                      color: Colors.orange,
                                     )
                                   : const Text(
                                       'Entrar',
-                                      style: TextStyle(color: Colors.white70),
+                                      style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 18),
                                     ),
                             ),
                           ),
                           TextButton(
                             child: const Text(
-                                'Não tem cadastro? Cadastre-se aqui!'),
+                              'Não tem cadastro? Cadastre-se aqui!',
+                              style: TextStyle(fontSize: 15),
+                            ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -164,8 +193,8 @@ class _LoginState extends State<Login> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.white70,
-            splashColor: Colors.blue,
+            backgroundColor: Colors.orangeAccent,
+            splashColor: Colors.yellowAccent,
             onPressed: () {
               _messangerKey.currentState?.showSnackBar(
                 SnackBar(
@@ -220,7 +249,7 @@ class _LoginState extends State<Login> {
         await context.read<AuthService>().login(
             _emailController.text.trim(), _passworldController.text.trim());
 
-       //carega o usuario
+        //carega o usuario
         await context.read<UserRepository>().readUser(
             Provider.of<AuthService>(context, listen: false).usuario!.uid);
 
@@ -239,7 +268,7 @@ class _LoginState extends State<Login> {
             setState(() {
               loading = false;
             });
-            print('usuario na tela de login'+usuarioLogado.toString());
+            print('usuario na tela de login' + usuarioLogado.toString());
             showToast(
               'Usuário inativo, favor contate o administrador!',
               context: contextParam,
@@ -265,10 +294,10 @@ class _LoginState extends State<Login> {
           loading = false;
         });
         showToast(
-          '${e.message}',
+          '${e.message} !',
           context: contextParam,
-          backgroundColor: Colors.red,
-          position: StyledToastPosition.bottom,
+          backgroundColor: Colors.orange,
+          position: StyledToastPosition.right,
           animation: StyledToastAnimation.slideFromRight,
           alignment: const Alignment(50, 0),
           textStyle: TextStyle(foreground: Paint()),

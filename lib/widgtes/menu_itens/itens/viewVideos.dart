@@ -1,17 +1,15 @@
-import 'dart:io';
-
 import 'package:collapsible_sidebar/collapsible_sidebar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:ta_pago/model/Usuario.dart';
 import 'package:ta_pago/widgtes/menu_itens/itens/videos.dart';
-
 import '../../../repository/configurationRepository.dart';
 import '../../../repository/userRepository.dart';
+import '../../../service/connection.dart';
 import '../menuItensAdmin.dart';
 import '../menuItensNotAdmin.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class ViewVideos extends StatefulWidget {
   const ViewVideos({Key? key}) : super(key: key);
@@ -21,19 +19,20 @@ class ViewVideos extends StatefulWidget {
 }
 
 class _ViewVideosState extends State<ViewVideos> {
+  DateTime dataAtual = DateTime.now();
+  int diaProjeto = 0;
   final FirebaseStorage storage = FirebaseStorage.instance;
   bool uploading = false;
   double total = 0.0;
   List<Reference> refs = [];
   List<String> arquivos = [];
   bool loading = true;
-  DateTime dataAtual = DateTime.now();
-  String diaProjeto = '';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    loadVideos();
   }
 
   @override
@@ -44,8 +43,13 @@ class _ViewVideosState extends State<ViewVideos> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Desafio dos 21 Dias!',
+        backgroundColor: Colors.orange,
+        shadowColor: Colors.black54,
+        centerTitle: true,
+        title: const Text(
+          'Acelerando o seu emagrecimento!',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
         ),
       ),
       drawer: SafeArea(
@@ -53,11 +57,11 @@ class _ViewVideosState extends State<ViewVideos> {
           items: usserLogged.isAdmin
               ? menuItens(context, 'viewVideos')
               : menuItensNotAdmin(context, 'viewVideos'),
-          textStyle: TextStyle(),
-          avatarImg: AssetImage('assets/img/personGymProfile.png'),
+          textStyle: const TextStyle(),
+          avatarImg: const AssetImage('assets/img/personGymProfile.png'),
           isCollapsed: false,
           title: 'Ola ${usserLogged.nome}!',
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
             fontSize: 22,
           ),
           toggleTitleStyle: TextStyle(),
@@ -65,213 +69,213 @@ class _ViewVideosState extends State<ViewVideos> {
           body: Container(),
         ),
       ),
-      body: Consumer<ConfigurationRepository>(builder: (context, cfg, child) {
-        /*  var vetDataInicial = cfg.cfgRepository.dataInicial.split('/');
-
-        DateTime dataInicio = DateTime(
-            int.tryParse(vetDataInicial[2].toString())!,
-            int.tryParse(vetDataInicial[1].toString())!,
-            int.tryParse(vetDataInicial[0].toString())!);
-        diaProjeto = dataAtual.difference(dataInicio).inDays.toString();*/
-        return (cfg.cfgRepository.ativo
-            ? ListView(
-                children: [
-                  Center(
-                    child: Column(
-                      children: [
-                        Card(
-                          child: Text('Hojé é o ${1}° dia de proejto.'),
-                        ),
-
-                        /*Column(
-                          children: listWidgets(),
-                        )*/
-                      ],
+      body: Consumer<ConfigurationRepository>(
+        builder: (context, cfg, child) {
+          if (cfg.cfgRepository.ativo &&
+              cfg.cfgRepository.dataInicial.isNotEmpty &&
+              cfg.cfgRepository.dataFinal.isNotEmpty) {
+            var vetDataInicial = cfg.cfgRepository.dataInicial.split('/');
+            if (vetDataInicial.isNotEmpty && vetDataInicial.length > 0) {
+              DateTime dataInicio = DateTime(
+                  int.tryParse(vetDataInicial[2].toString())!,
+                  int.tryParse(vetDataInicial[1].toString())!,
+                  int.tryParse(vetDataInicial[0].toString())!);
+              diaProjeto = dataAtual.difference(dataInicio).inDays + 1;
+            }
+          }
+          return (cfg.cfgRepository.ativo &&  cfg.cfgRepository.dataInicial.isNotEmpty &&
+          cfg.cfgRepository.dataFinal.isNotEmpty && diaProjeto <= 23
+              ? ListView(
+                  children: [
+                    Container(
+                        color: Colors.white10,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  shadowColor: Colors.orange,
+                                  elevation: 25,
+                                  color: Colors.white10,
+                                  child: Text(
+                                      'Hojé é o ${diaProjeto}° dia de projeto.',
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: loading
+                                    ? [
+                                        Center(
+                                          child: Column(
+                                            children: const [
+                                              Text('Carregando Videos'),
+                                              CircularProgressIndicator(),
+                                            ],
+                                          ),
+                                        )
+                                      ]
+                                    : listWidgets(diaProjeto, usserLogged),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Column(
+                        children: const [
+                          Text(
+                            'O Projeto não está ativo',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                          Text(
+                            'Contate o administrador!',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Column(
-                      children: [
-                       const Text(
-                          'O Projeto não está ativo',
-                          style: TextStyle( fontSize: 22),
-                        ),Text(
-                          'Contate o administrador!',
-                          style: TextStyle(fontSize: 22),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ));
-      }),
+                  ],
+                ));
+        },
+      ),
     );
   }
 
-  listWidgets() {
+  listWidgets(int diaProjeto, Usuario usserLogged) {
+    print(usserLogged);
     List<Widget> listaWidgets = [];
-    for (var x = 1; x < 22; x++) {
+    for (var x = 1; x <= diaProjeto; x++) {
       listaWidgets.add(
         Card(
-          color: Colors.lightBlue,
-          child: VideoApp(
-              'https://firebasestorage.googleapis.com/v0/b/ta-pago-19987.appspot.com/o/video%2F11.mp4?alt=media&token=a1c8f67f-784d-4854-a2c9-03813a7374ed'),
+          color: Colors.orange,
+          child: Column(
+            children: [
+              Text(
+                'Dia ${x}°',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold),
+              ),
+              VideoApp(
+                arquivos[x].toString(),
+              ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
+                   Text('Marcar video como concluido'),
+                   Checkbox(value: usserLogged.listaVideosAssistidos[x - 1] , onChanged: (bool? value) {
+                     marcarVideoAssitido(x, usserLogged);
+                     //userInactivate(lista[index]);
+                   }, ),
+                 ],
+               ),
+            ],
+          ),
         ),
       );
     }
-
     return listaWidgets;
   }
 
   loadVideos() async {
-    refs = (await storage.ref('video').listAll()).items;
-    loading = true;
-    print('foi encontrado ${refs.length} videos no banco de dados');
-    for (var ref in refs) {
-      arquivos.add(await ref.getDownloadURL());
-    }
-    setState(() {
-      loading = false;
-    });
-  }
+    do {
+      try {
+        print('vou carregar os videos');
 
-  Future<XFile?> getImage() async {
-    final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickVideo(source: ImageSource.gallery);
-    return image;
-  }
-
-  Future<UploadTask> upload(String path, int index) async {
-    File file = File(path);
-
-    try {
-      //ref local que vai ser savlo
-      String ref = 'video/${index}.mp4';
-      return storage.ref(ref).putFile(file);
-    } on FirebaseException catch (e) {
-      throw Exception('Erro o upload : ${e.message}');
-    }
-  }
-
-  pickAndUploadImage(int index) async {
-    XFile? file = await getImage();
-    if (file != null) {
-      UploadTask task = await upload(file.path, index);
-
-      task.snapshotEvents.listen((TaskSnapshot snapshot) async {
-        if (snapshot.state == TaskState.running) {
-          setState(() {
-            uploading = true;
-            total = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          });
-        } else if (snapshot.state == TaskState.success) {
-          arquivos.add(await snapshot.ref.getDownloadURL());
-          refs.add(snapshot.ref);
-          setState(() {
-            uploading = false;
-          });
+        refs = (await storage.ref('video').listAll()).items;
+        print('foi encontrado ${refs.length} videos no banco de dados');
+        if (arquivos.length < refs.length) {
+          for (var ref in refs) {
+            print("arquivos.lengt"+arquivos.length.toString());
+            arquivos.add(await ref.getDownloadURL());
+          }
         }
-        ;
-      });
-    }
-  }
-
-  deleteVideo(int index) async {
-    try {
-      Reference? ref;
-      for (var x = 0; x < refs.length; x++) {
-        if (refs[x].fullPath == 'video/${index}.mp4') {
-          ref = refs[x];
-          arquivos.removeAt(x);
-          refs.removeAt(x);
-        }
+        setState(() {
+          loading = false;
+        });
+      } catch (e) {
+        setState(() {
+          loading = false;
+        });
+        print('erro ao carregar videos' + e.toString());
       }
-      if (refs.contains(ref)) {
-        print('posso deletar o arquivo${index}');
-        await storage.ref(ref!.fullPath).delete();
-        //arquivos.removeAt(index);
-        //refs.removeAt(index);
-        loadVideos();
+    }while(arquivos.length <diaProjeto);
+  }
 
-        showToast('Video de numero${index} deletado com sucesso.',
-            context: context,
-            alignment: const Alignment(50, 0),
-            textStyle: TextStyle(foreground: Paint()),
-            backgroundColor: Colors.green,
-            position: StyledToastPosition.bottom,
-            duration: const Duration(seconds: 5),
-            curve: Curves.fastLinearToSlowEaseIn,
-            animDuration: const Duration(seconds: 2),
-            animation: StyledToastAnimation.slideFromRight,
-            reverseCurve: Curves.fastLinearToSlowEaseIn,
-            borderRadius: BorderRadius.all(Radius.circular(12)));
+  marcarVideoAssitido(int index,Usuario user) async {
+     try {
+      verifyConnectivity();
+      user.listaVideosAssistidos[index - 1] =  !user.listaVideosAssistidos[index - 1 ];
+      if (user.listaVideosAssistidos[index -1 ]) {
+        user.pontuacao += 1;
       } else {
-        showToast(
-          'Video de numero ${index} não existe no banco  de dados \n Impossvel deletar.',
-          context: context,
-          textStyle: TextStyle(foreground: Paint()),
-          backgroundColor: Colors.red,
-          position: const StyledToastPosition(align: Alignment.topRight),
-          duration: const Duration(seconds: 5),
-          curve: Curves.fastLinearToSlowEaseIn,
-          animDuration: const Duration(seconds: 2),
-          animation: StyledToastAnimation.slideFromRight,
-          reverseCurve: Curves.fastLinearToSlowEaseIn,
-          borderRadius: BorderRadius.all(
-            Radius.circular(12),
-          ),
-        );
+        user.pontuacao -= 1;
       }
-    } catch (e) {
+
+
+      await Provider.of<UserRepository>(context, listen: false)
+          .update(user);
+      setState(() {});
       showToast(
-        'Video de numero ${index} não existe no banco  de dados \n Impossvel deletar.',
+        '${user.listaVideosAssistidos[index -1 ] ? 'Parabéns por cncluir mais um treino!!!' : 'Não deixe de assitir a esta aula.'}',
+        //!user.ativo ? user.nome + ' Bloqueado' : user.nome + ' Liberado',
         context: context,
-        textStyle: TextStyle(foreground: Paint()),
-        backgroundColor: Colors.red,
-        position: const StyledToastPosition(align: Alignment.topRight),
-        duration: const Duration(seconds: 5),
-        curve: Curves.fastLinearToSlowEaseIn,
-        animDuration: const Duration(seconds: 2),
+        backgroundColor: Colors.lightBlueAccent,
+        position: StyledToastPosition.right,
         animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
+        textStyle: TextStyle(foreground: Paint()),
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
         reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
         borderRadius: BorderRadius.all(
           Radius.circular(12),
         ),
       );
-      print('erro ao deletar video numero ${index}' + e.toString());
+    } catch (e) {
+      showToast(
+        'Ero ao fazer alteração no aluno.',
+        context: context,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
+        animation: StyledToastAnimation.slideFromRight,
+        alignment: const Alignment(50, 0),
+        textStyle: TextStyle(foreground: Paint()),
+        toastHorizontalMargin: 12,
+        isHideKeyboard: true,
+        reverseCurve: Curves.fastLinearToSlowEaseIn,
+        animDuration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
+        curve: Curves.fastLinearToSlowEaseIn,
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      );
+      print('erro ao fazer atualizacao' + e.toString());
     }
   }
+
+  verifyConnectivity() async {
+    final conn = await Provider.of<Connection>(context, listen: false)
+        .checkConnectivty();
+    return conn.toString();
+  }
+  @override
+  void dispose() {
+    this.dispose();
+    super.dispose();
+  }
 }
-/*
-Column(
-      children: [
-        listWidgets(),
-        Row(
-          children: [
-            Container(
-              child: Image.asset(
-                'assets/img/Medidas.jpeg',
-                width: 50,
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.delete_forever),
-            ),
-          ],
-        ),
-        ElevatedButton(
-          style: ButtonStyle(),
-          onPressed: () {},
-          child: Row(
-            children: [Icon(Icons.add), Text('1°Video')],
-          ),
-        ),
-      ],
-    );
- */

@@ -41,8 +41,8 @@ class _RankingPageState extends State<RankingPage> {
       showToast(
         'Erro ao carregar imagens',
         context: context,
-        backgroundColor: Colors.red,
-        position: StyledToastPosition.bottom,
+        backgroundColor: Colors.orange,
+        position: StyledToastPosition.right,
         animation: StyledToastAnimation.slideFromRight,
         alignment: const Alignment(50, 0),
         textStyle: TextStyle(foreground: Paint()),
@@ -124,33 +124,43 @@ class _RankingPageState extends State<RankingPage> {
   @override
   Widget build(BuildContext context) {
     // Provider.of<UserRepository>(context, listen: true).loadImages();
-
+    final usserLogged =
+        Provider.of<UserRepository>(context, listen: true).usuarioLogado;
     return MaterialApp(
       scaffoldMessengerKey: _messangerKey,
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.orange,
+          shadowColor: Colors.blueAccent,
+          elevation: 10,
+          centerTitle: true,
           title: Row(
             children: [
-              Text('Ranking'),
+              const Text(
+                'Ranking',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 200.0),
                 child: SizedBox(
-                  width: 22,
+                  width: 28,
                   child: FloatingActionButton(
-                      mini: true,
-                      child: Icon(
+                      child: const Icon(
                         Icons.question_mark,
-                        size: 12,
+                        size: 24,
                       ),
                       onPressed: () {
                         _messangerKey.currentState?.showSnackBar(
                           SnackBar(
                             dismissDirection: DismissDirection.down,
-                            backgroundColor: Colors.white70,
+                            backgroundColor: Colors.orange,
                             content: Text(
-                              'Aplicativo desenvolvido em parceira com a personal trainer Auxiliadora Silva, e como proposta de conclusão do curso de Ciência da Computação do Unifor MG pelo aluno Italo Cesar Castro!',
-                              style:
-                                  TextStyle(foreground: Paint(), fontSize: 14),
+                              'Consulte a pagina SOBRE O APP para mais informações!',
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 18,
+                              ),
                             ),
                             action: SnackBarAction(
                               label: 'OK',
@@ -168,7 +178,9 @@ class _RankingPageState extends State<RankingPage> {
         ),
         drawer: SafeArea(
           child: CollapsibleSidebar(
-            items: menuItensNotAdmin(context, 'rankingPage'),
+            items: usserLogged.isAdmin
+                ? menuItens(context, 'rankingPage')
+                : menuItensNotAdmin(context, 'rankingPage'),
             textStyle: TextStyle(),
             avatarImg: AssetImage('assets/img/personGymProfile.png'),
             isCollapsed: false,
@@ -199,13 +211,15 @@ class _RankingPageState extends State<RankingPage> {
                 ),
               )
             : FutureBuilder(
-                future: Provider.of<UserRepository>(context, listen: false)
+                future: Provider.of<UserRepository>(context, listen: true)
                     .readAll(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Usuario>> snapshot) {
                   if (!snapshot.hasData) {
-                    return Container(
-                      child: const Text('Nenhum aluno encontrado'),
+                    return Center(
+                      child: Container(
+                        child: const Text('Sem dados para serem exbidos!', style: TextStyle(fontSize: 22),),
+                      ),
                     ); // still loading
                   } else {
                     return Padding(
@@ -236,8 +250,8 @@ class _RankingPageState extends State<RankingPage> {
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 borderOnForeground: true,
-                shadowColor: Colors.black,
-                elevation: 6,
+                shadowColor: Colors.orange,
+                elevation: 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -276,8 +290,7 @@ class _RankingPageState extends State<RankingPage> {
     return Consumer<UserRepository>(builder: (context, repository, child) {
       return Card(
         elevation: 16,
-        borderOnForeground: true,
-        shadowColor: Colors.black,
+        shadowColor: Colors.orange,
         child: (Column(
           children: [
             Padding(
@@ -356,7 +369,7 @@ class _RankingPageState extends State<RankingPage> {
                               ),
                             ),
                       Text('2 ° Lugar'),
-                      Text(threePlace.nome),
+                      Text(secondPlace.nome),
                     ],
                   ),
                 ),
