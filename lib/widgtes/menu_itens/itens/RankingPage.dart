@@ -215,7 +215,9 @@ class _RankingPageState extends State<RankingPage> {
                     .readAll(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Usuario>> snapshot) {
+                  print('tela ranking'+snapshot.data.toString());
                   if (!snapshot.hasData) {
+
                     return Center(
                       child: Container(
                         child: const Text('Sem dados para serem exbidos!', style: TextStyle(fontSize: 22),),

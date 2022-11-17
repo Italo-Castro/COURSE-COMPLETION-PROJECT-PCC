@@ -61,7 +61,7 @@ class Usuario extends ChangeNotifier {
       var passworld = list[x]['passworld'].toString();
       var isAdmin = list[x]['isAdmin'];
       var pontuacao = list[x]['pontuacao'];
-      var avaliacaoApp = list[x]['avaliacaoApp'];
+      /*var avaliacaoApp = list[x]['avaliacaoApp'];
       var busto = list[x]['busto'].toString();
       var torax = list[x]['torax'].toString();
       var bracos = list[x]['bracos'].toString();
@@ -69,14 +69,14 @@ class Usuario extends ChangeNotifier {
       var abdomen = list[x]['abdomen'].toString();
       var quadril = list[x]['quadril'].toString();
       var coxas = list[x]['coxas'].toString();
-      var panturilha = list[x]['panturilha'].toString();
+      var panturilha = list[x]['panturilha'].toString();*/
       var ativo = list[x]['ativo'];
-      var listaVideosAssitidos = list[x]['listaVideosAssitidos'];
+
+      var listaVideosAssitidos = list[x]['listaVideosAssistidos'].cast<bool>();
       Usuario user = new Usuario(uid, nome, email, telefone, apelido, passworld,
           isAdmin, ativo, pontuacao, 0,listaVideosAssitidos);
       listUser.add(user);
     }
-
     return listUser;
   }
 

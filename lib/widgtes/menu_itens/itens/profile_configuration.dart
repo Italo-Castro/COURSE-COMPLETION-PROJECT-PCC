@@ -49,7 +49,7 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
         title: Text(
           'Configurações do perfil de ${usserLogged.nome}',
           textAlign: TextAlign.center,
-          style: TextStyle(),
+          style: const TextStyle(),
         ),
 
       ),
@@ -58,16 +58,16 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
           items: usserLogged.isAdmin
               ? menuItens(context, 'profileConfiguration')
               : menuItensNotAdmin(context, 'profileConfiguration'),
-          textStyle: TextStyle(),
+          textStyle: const TextStyle(),
           avatarImg: arquivos.isEmpty
               ? AssetImage('assets/img/personGymProfile.png')
               : NetworkImage(arquivos[0]),
           isCollapsed: false,
           title: 'Ola ${usserLogged.nome}!',
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
             fontSize: 22,
           ),
-          toggleTitleStyle: TextStyle(),
+          toggleTitleStyle: const TextStyle(),
           toggleTitle: ('Esconder'),
           body: Container(),
         ),
@@ -83,7 +83,7 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 15, right: 8.0, left: 8),
+              padding: const EdgeInsets.only(top: 15, right: 8.0, left: 8),
               child: TextFormField(
                 controller: _nickName,
                 decoration: InputDecoration(
@@ -95,15 +95,15 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+              padding: const EdgeInsets.only(top: 20, right: 8.0, left: 8),
               child: RatingBar.builder(
                 initialRating: usserLogged.avaliacaoApp,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
                 itemCount: 5,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => const Icon(
                   Icons.star,
                   color: Colors.amber,
                 ),
@@ -120,9 +120,9 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
                 ),
               ),*/
             ),
-            Text('Sua avaliação para o app'),
+            const Text('Sua avaliação para o app'),
             Padding(
-              padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+              padding:const  EdgeInsets.only(top: 20, right: 8.0, left: 8),
               child: Container(
                 width: 280,
                 height: 50,
@@ -133,25 +133,25 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
                   onPressed: () {
                     pickAndUploadImage(usserLogged.uid);
                   },
-                  child: Text('Atualizar Foto'),
+                  child: const Text('Atualizar Foto'),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 20, right: 8.0, left: 8),
+              padding:const EdgeInsets.only(top: 20, right: 8.0, left: 8),
               child: Container(
                 child: loading | uploading
                     ? Column(
                         children: [
                           Text('${total.round()}% enviado'),
-                          CircularProgressIndicator(),
+                          const  CircularProgressIndicator(),
                         ],
                       )
                     : arquivos.isEmpty
                         ? Container(
                             width: 190.0,
                             height: 190.0,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.fill,
@@ -176,13 +176,13 @@ class _ProfileConfigurationsState extends State<ProfileConfigurations> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:  FloatingActionButton(
         onPressed: () {
           saveUser(usserLogged);
         },
-        child: Icon(Icons.save),
         backgroundColor: Colors.white70,
         splashColor: Colors.red,
+        child: const  Icon(Icons.save),
       ),
     );
   }

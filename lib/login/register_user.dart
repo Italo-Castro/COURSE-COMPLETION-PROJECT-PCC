@@ -45,7 +45,7 @@ class _RegisterUserState extends State<RegisterUser> {
       home: Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.orange,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.orange,
           shadowColor: Colors.blue,
           elevation: 10,
           centerTitle: true,

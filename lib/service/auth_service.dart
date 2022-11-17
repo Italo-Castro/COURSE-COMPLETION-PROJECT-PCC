@@ -26,7 +26,7 @@ class AuthService extends ChangeNotifier {
 
   _getUser() {
     usuario = _auth.currentUser;
-    print('pegando usuario autenticado' + usuario.toString());
+    //print('pegando usuario autenticado' + usuario.toString());
     notifyListeners();
   }
 

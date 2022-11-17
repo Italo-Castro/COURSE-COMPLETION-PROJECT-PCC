@@ -83,8 +83,10 @@ class _ViewVideosState extends State<ViewVideos> {
               diaProjeto = dataAtual.difference(dataInicio).inDays + 1;
             }
           }
-          return (cfg.cfgRepository.ativo &&  cfg.cfgRepository.dataInicial.isNotEmpty &&
-          cfg.cfgRepository.dataFinal.isNotEmpty && diaProjeto <= 23
+          return (cfg.cfgRepository.ativo &&
+                  cfg.cfgRepository.dataInicial.isNotEmpty &&
+                  cfg.cfgRepository.dataFinal.isNotEmpty &&
+                  diaProjeto <= 23
               ? ListView(
                   children: [
                     Container(
@@ -151,36 +153,43 @@ class _ViewVideosState extends State<ViewVideos> {
   }
 
   listWidgets(int diaProjeto, Usuario usserLogged) {
-    print(usserLogged);
     List<Widget> listaWidgets = [];
     for (var x = 1; x <= diaProjeto; x++) {
       listaWidgets.add(
-        Card(
-          color: Colors.orange,
-          child: Column(
-            children: [
-              Text(
-                'Dia ${x}°',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
+        Column(
+          children: [
+            Card(
+              shadowColor: Colors.lightBlueAccent,
+              elevation: 16,
+              color: Colors.orange,
+              child: Column(
+                children: [
+                  Text(
+                    'Dia ${x}°',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  VideoApp(
+                    arquivos[x].toString(),
+                  ),
+                ],
               ),
-              VideoApp(
-                arquivos[x].toString(),
-              ),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.end,
-                 children: [
-                   Text('Marcar video como concluido'),
-                   Checkbox(value: usserLogged.listaVideosAssistidos[x - 1] , onChanged: (bool? value) {
-                     marcarVideoAssitido(x, usserLogged);
-                     //userInactivate(lista[index]);
-                   }, ),
-                 ],
-               ),
-            ],
-          ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('Marcar ${x}° video como concluido'),
+                Checkbox(
+                  value: usserLogged.listaVideosAssistidos[x - 1],
+                  onChanged: (bool? value) {
+                    marcarVideoAssitido(x, usserLogged);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       );
     }
@@ -196,7 +205,7 @@ class _ViewVideosState extends State<ViewVideos> {
         print('foi encontrado ${refs.length} videos no banco de dados');
         if (arquivos.length < refs.length) {
           for (var ref in refs) {
-            print("arquivos.lengt"+arquivos.length.toString());
+            print("arquivos.lengt" + arquivos.length.toString());
             arquivos.add(await ref.getDownloadURL());
           }
         }
@@ -209,25 +218,24 @@ class _ViewVideosState extends State<ViewVideos> {
         });
         print('erro ao carregar videos' + e.toString());
       }
-    }while(arquivos.length <diaProjeto);
+    } while (arquivos.length < diaProjeto);
   }
 
-  marcarVideoAssitido(int index,Usuario user) async {
-     try {
+  marcarVideoAssitido(int index, Usuario user) async {
+    try {
       verifyConnectivity();
-      user.listaVideosAssistidos[index - 1] =  !user.listaVideosAssistidos[index - 1 ];
-      if (user.listaVideosAssistidos[index -1 ]) {
+      user.listaVideosAssistidos[index - 1] =
+          !user.listaVideosAssistidos[index - 1];
+      if (user.listaVideosAssistidos[index - 1]) {
         user.pontuacao += 1;
       } else {
         user.pontuacao -= 1;
       }
 
-
-      await Provider.of<UserRepository>(context, listen: false)
-          .update(user);
+      await Provider.of<UserRepository>(context, listen: false).update(user);
       setState(() {});
       showToast(
-        '${user.listaVideosAssistidos[index -1 ] ? 'Parabéns por cncluir mais um treino!!!' : 'Não deixe de assitir a esta aula.'}',
+        '${user.listaVideosAssistidos[index - 1] ? 'Parabéns por concluir mais um treino!!!' : 'Não deixe de assitir a esta aula.'}',
         //!user.ativo ? user.nome + ' Bloqueado' : user.nome + ' Liberado',
         context: context,
         backgroundColor: Colors.lightBlueAccent,
@@ -273,6 +281,7 @@ class _ViewVideosState extends State<ViewVideos> {
         .checkConnectivty();
     return conn.toString();
   }
+
   @override
   void dispose() {
     this.dispose();

@@ -69,7 +69,8 @@ class _LoginState extends State<Login> {
                             padding:
                                 const EdgeInsets.only(right: 25.0, left: 25.0),
                             child: TextFormField(
-                              toolbarOptions: ToolbarOptions(
+                              keyboardType: TextInputType.emailAddress,
+                              toolbarOptions: const ToolbarOptions(
                                 selectAll: true,
                               ),
                               textAlign: TextAlign.center,
