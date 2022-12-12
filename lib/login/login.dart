@@ -98,8 +98,8 @@ class _LoginState extends State<Login> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: TextFormField(
-                                    toolbarOptions: ToolbarOptions(
+                                  child:  TextFormField(
+                                    toolbarOptions: const ToolbarOptions(
                                       selectAll: true,
                                     ),
                                     maxLength: 6,

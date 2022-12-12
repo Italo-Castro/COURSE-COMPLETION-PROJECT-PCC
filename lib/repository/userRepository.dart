@@ -46,7 +46,7 @@ class UserRepository extends ChangeNotifier {
   setUserLogado(Map<String, dynamic> result) {
     usuarioLogado = Usuario.fromJson(result);
     print('setei o usuario logado');
-    print('usuario logado' + usuarioLogado.toString());
+    print('usuario logado' + usuarioLogado.nome);
     notifyListeners();
   }
 
@@ -162,13 +162,15 @@ class UserRepository extends ChangeNotifier {
       snapshot.docs.forEach((doc) {
         listUser.add(doc.data());
       });
+
+      List<Usuario> lista = usuarioLogado.fromArrayJson(listUser);
       notifyListeners();
+      return lista;
+
     } catch (e) {
       print('erro ao buscar coleção user do firebase' + e.toString());
       throw AuthException('Sem permissão para acessar banco de dados.');
     }
-    List<Usuario> lista = usuarioLogado.fromArrayJson(listUser);
-    return lista;
   }
 
   remove(Usuario usuario) async {

@@ -11,8 +11,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final usserLogged =
-        Provider.of<UserRepository>(context, listen: false).usuarioLogado;
     return const MaterialApp(
       home: ViewVideos(),
       //usserLogged.isAdmin ? ViewVideos() : NotAdmin(),

@@ -130,6 +130,8 @@ class _AlunosState extends State<Alunos> {
             title: Text(lista[index].nome), //refs[index].fullPath
             trailing: Checkbox(
               value: lista[index].ativo,
+              checkColor: Colors.orange,
+              side: BorderSide(color: Colors.orange),
               onChanged: (bool? value) {
                 userInactivate(lista[index]);
               },

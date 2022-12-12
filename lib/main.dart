@@ -2,7 +2,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ta_pago/model/Configurations.dart';
 import 'package:ta_pago/repository/configurationRepository.dart';
 import 'package:ta_pago/repository/userRepository.dart';
 import 'package:ta_pago/service/auth_service.dart';
@@ -12,6 +11,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //await FlutterDownloader.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

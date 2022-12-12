@@ -156,40 +156,45 @@ class _ViewVideosState extends State<ViewVideos> {
     List<Widget> listaWidgets = [];
     for (var x = 1; x <= diaProjeto; x++) {
       listaWidgets.add(
-        Column(
-          children: [
-            Card(
-              shadowColor: Colors.lightBlueAccent,
-              elevation: 16,
-              color: Colors.orange,
-              child: Column(
+        Card(
+          shadowColor: Colors.lightBlueAccent,
+          elevation: 16,
+          color: Colors.orange,
+          child: Column(
+            children: [
+              Card(
+                shadowColor: Colors.lightBlueAccent,
+                elevation: 16,
+                color: Colors.orange,
+                child: Column(
+                  children: [
+                    Text(
+                      '${x}° Dia ',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    VideoApp(
+                      arquivos[x].toString(),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Dia ${x}°',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  VideoApp(
-                    arquivos[x].toString(),
+                  Text('Marcar ${x}° video como concluido'),
+                  Checkbox(
+                    value: usserLogged.listaVideosAssistidos[x - 1],
+                    onChanged: (bool? value) {
+                      marcarVideoAssitido(x, usserLogged);
+                    },
                   ),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('Marcar ${x}° video como concluido'),
-                Checkbox(
-                  value: usserLogged.listaVideosAssistidos[x - 1],
-                  onChanged: (bool? value) {
-                    marcarVideoAssitido(x, usserLogged);
-                  },
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
